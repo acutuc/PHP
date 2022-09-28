@@ -6,9 +6,11 @@
     </head>
     <body>
         <h1>Ejercicio1</h1>
-        <p>Aknaceba en un array los 10 primeros números pares. Imprímelos cada uno en una línea.</p>
+        <p>Almacena en un array los 10 primeros números pares. Imprímelos cada uno en una línea.</p>
         <?php
-        
+        	for($i = 0; i < 10; i++){
+        		echo "<p>Par número ".$i+1.": ".$i+2"</p>"
+        	}
         ?>
     </body>
 </html>
