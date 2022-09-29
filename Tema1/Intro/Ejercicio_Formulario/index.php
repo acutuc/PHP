@@ -63,7 +63,7 @@
 			</p>
 			<p>
 				<label id="sexo">Sexo: </label>
-				<label for="hombre">Hombre</label><input type="radio" id="hombre" name="sexo" value="hombre" <?php if(isset($%_POST["sexo"]) && $_POST["sexo"]=="Hombre"?>/>
+				<label for="hombre">Hombre</label><input type="radio" id="hombre" name="sexo" value="hombre" <?php if(isset($_POST["sexo"]) && $_POST["sexo"]=="Hombre"?>/>
 				<label for="mujer">Mujer</label><input type="radio" id="mujer" name="sexo" value="mujer"/>
 				<?php
 					if(isset($_POST["btnEnviar"]) && $error_sexo)
