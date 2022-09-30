@@ -17,19 +17,19 @@
             echo "<li>";
                 echo $nombre_familia;
                 echo "<ul>";
-                foreach($nombre_familia as $parentesco => $nombre){
+                foreach($familia as $parentesco => $nombre){
                     echo "<li>";
                     if($parentesco == "Hijos"){
                         echo $parentesco.": ";
                         echo "<ol>";
-                        for($i = 0; count($nombre); $i++){
+                        for($i = 0; $i<count($nombre); $i++){
                             echo "<li>";
                             echo $nombre[$i];
                             echo "</li>";
                         }
                         echo "</ol>";
                     }else {
-                        echo $parentesco.": ".$valor;
+                        echo $parentesco.": ".$nombre;
                     }
                         
                     echo "</li>";
