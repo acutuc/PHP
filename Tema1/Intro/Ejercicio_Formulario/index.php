@@ -31,9 +31,20 @@
 				} else {
 					echo "<p><strong>Las afición seleccionada ha sido:</strong></p>";
 				}
+				echo "<ol>";
+				for($i = 0; $i < $n_aficiones; $i++){
+					echo "<li>".$_POST["aficiones"][$i]."</li>";
+				}
+				echo "</ol>";
 			} else {
-				echo "<p><strong>No has seleccionado ninguna afición.</strong></p>"
+				echo "<p><strong>No has seleccionado ninguna afición.</strong></p>";
 			}
+			if($_POST["comentarios"] == ""){
+				echo "<p><strong>No has realizado ningún comentario</strong></p>";
+			} else {
+				echo "<p><strong>Los comentarios realizados han sido: </strong>".$_POST["comentarios"]."</p>";
+			}
+		} else{
 		?>
 	</body>
 </html>
@@ -48,6 +59,7 @@
 			<p>
 				<label for="nombre">Nombre: </label>
 				<input type="text" name="nombre" id="nombre" value="<?php if(isset($_POST["nombre"])) echo $_POST["nombre"];?>"/>
+				<!--SI NO SE RELLENA EL CAMPO NOMBRE:-->
 				<?php
 					if (isset($_POST["nombre"]) && $error_nombre)
 					echo "<span class='error'>*** CAMPO OBLIGATORIO *** </span>";
@@ -57,14 +69,15 @@
 				<label for="nacido">Nacido en: </label>
 				<select id="nacido">
 					<option value="0">Málaga</option>
-					<option value="1">Cádiz</option>
-					<option value="2">Granada</option>
+					<option value="1" <?php if (isset($_POST["nacido"]) && $_POST["nacido"] == "Cádiz") echo "selected"; ?>>Cádiz</option>
+					<option value="2" <?php if (isset($_POST["nacido"]) && $_POST["nacido"] == "Granada") echo "selected"; ?>>Granada</option>
 				</select>
 			</p>
 			<p>
 				<label id="sexo">Sexo: </label>
-				<label for="hombre">Hombre</label><input type="radio" id="hombre" name="sexo" value="hombre" <?php if(isset($_POST["sexo"]) && $_POST["sexo"]=="Hombre"?>/>
-				<label for="mujer">Mujer</label><input type="radio" id="mujer" name="sexo" value="mujer"/>
+				<label for="hombre">Hombre</label><input type="radio" id="hombre" name="sexo" value="hombre" <?php if(isset($_POST["sexo"]) && $_POST["sexo"]=="hombre") echo "checked"?>/>
+				<label for="mujer">Mujer</label><input type="radio" id="mujer" name="sexo" value="mujer" <?php if(isset($_POST["sexo"]) && $_POST["sexo"]=="mujer") echo "checked"?>/>
+				<!--SI NO SE MARCA NINGÚN SEXO:-->
 				<?php
 					if(isset($_POST["btnEnviar"]) && $error_sexo)
 					echo "<span class='error'>*** DEBES MARCAR UNA OPCIÓN ***</span>";
@@ -77,7 +90,9 @@
 				<label for="otros">Otros</label><input type="checkbox" id="otros" name="aficiones[]" value="otros"/>
 			</p>
 			<p>
-				<label for="comentarios">Comentarios: </label><textarea id="comentarios" cols="30" rows="5"></textarea>
+				<label for="comentarios">Comentarios: </label><textarea id="comentarios" name="comentarios" cols="30" rows="5"><?php if (isset($_POST["comentarios"])) {
+                                                                                                                        echo $_POST["comentarios"];
+                                                                                                                    } ?></textarea>
 			</p>
 			
 			<button type="submit" name="btnEnviar">Enviar</button>
@@ -85,5 +100,5 @@
 	</body>
 </html>
 <?php
-
+	}
 ?>

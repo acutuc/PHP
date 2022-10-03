@@ -11,9 +11,13 @@
     <head>
         <title>Ejercicio 1</title>
         <meta charset="UTF-8">
+        <style>
+            .fondo{background-color: lightblue;border: 1px solid black;}
+            #comparar{align:center;}
+        </style>
     </head>
     <body>
-        <div>
+        <div class="fondo">
             <h2 align="center">Ripios - Formulario</h2>
                 <form method="POST" action="index.php" ectype="multipart/form-data">
                         <p>Dime dos palabras y te diré si riman o no.</p>
@@ -37,7 +41,7 @@
                                 }
                             ?>
                         </p>
-                        <button type="submit" name="btnComparar">Comparar</button>
+                        <button type="submit" name="btnComparar" id="comparar">Comparar</button>
                 </form>
         </div>
 <?php
