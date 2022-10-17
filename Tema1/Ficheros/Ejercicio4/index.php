@@ -1,7 +1,7 @@
 <?php
     if(isset($_POST["btnEnviar"])){
-        $error_caja1 = solo_numeros();
-        $error_caja2 = solo_numeros();
+        $error_caja1 = "" || !is_numeric($_POST["caja1"]);
+        $error_caja2 = "" || !is_numeric($_POST["caja2"]);
         $error_formulario = $error_caja1 || $error_caja2;
     }
 ?>
@@ -20,12 +20,33 @@
         </p>
         <form action="index.php" method="POST" enctype="multipart/form-data">
             <p>
-                <label for="caja1">Introduzca un número: </label><input type="text" id="caja1" name="caja1">
+                <label for="caja1">Introduzca un número: </label><input type="text" id="caja1" name="caja1" value="<?php if(isset($_POST['caja1'])) echo $_POST['caja1']?>">
+                <?php
+                    if(isset($_POST["btnEnviar"]) && $error_caja1){
+                        echo "<span class='error'>Debe introducir un número</span>";
+                    }
+                ?>
             </p>
             <p>
-                <label for="caja2">Introduzca un número: </label><input type="text" id="caja2" name="caja2">
+                <label for="caja2">Introduzca un número: </label><input type="text" id="caja2" name="caja2" value="<?php if(isset($_POST['caja2'])) echo $_POST['caja2']?>">
+                <?php
+                    if(isset($_POST["btnEnviar"]) && $error_caja2){
+                        echo "<span class='error'>Debe introducir un número</span>";
+                    }
+                ?>
             </p>
             <button type="submit" name="btnEnviar">Enviar</button>
+            <?php
+                if(isset($_POST["btnEnviar"]) && is_numeric($_POST["caja1"]) && is_numeric($_POST["caja2"]) && !$error_formulario){
+                    echo "<p><strong>Contenido de la primera caja: </strong>".$_POST["caja1"]."</p>";
+                    echo "<p><strong>Contenido de la segunda caja: </strong>".$_POST["caja2"]."</p>";
+                    echo "<p><strong>Suma: </strong>".$_POST["caja1"] + $_POST["caja2"]."</p>";
+                    echo "<p><strong>Resta: </strong>".$_POST["caja1"] - $_POST["caja2"]."</p>";
+                    echo "<p><strong>Producto: </strong>".$_POST["caja1"] * $_POST["caja2"]."</p>";
+                    echo "<p><strong>Cociente: </strong>".$_POST["caja1"] / $_POST["caja2"]."</p>";
+                    echo "<p><strong>Módulo: </strong>".$_POST["caja1"] % $_POST["caja2"]."</p>";
+                }
+            ?>
         </form> 
         <?php
 

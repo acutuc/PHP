@@ -3,7 +3,7 @@
 <?php
 $correcto = true;
 ?>
-<html lan="es">
+<html lang="es">
 
 <head>
     <title>Ejercicio 6</title>
