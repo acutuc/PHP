@@ -99,7 +99,7 @@
             </tr>
             <tr>
                 <td align=center><button type="submit" name="btnEnviar" value="submit">Enviar</button></td>
-                <td align=center><button type="submit" name="btnReset" value="reset">Borrar</button></td>
+                <td align=center><button type="submit" name="btnEnviar" value="reset">Borrar</button></td>
             </tr>
         </table>
     </form>
