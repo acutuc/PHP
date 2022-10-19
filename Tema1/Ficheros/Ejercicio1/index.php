@@ -1,54 +1,54 @@
 <?php
-if (isset($_GET["btnEnviar"])) {
-    $error_nombre = $_GET["nombre"] == "";
-    $error_apellidos = $_GET["apellidos"] == "";
+    if(isset($_POST["btnGenerar"])){
 
-    $error_formulario = $error_nombre || $error_apellidos;
-}
-//Si no existe btnEnviar o hay error en el formulario, mostramos la página inicial
-if (!isset($_GET["btnEnviar"]) || $error_formulario) {
-
+        $error_formulario = $_POST["num"] == "" || !is_numeric($_POST["num"]) || $_POST["num"] < 1 || $_POST["num"] > 10;
+    }
 ?>
-    <!DOCTYPE html>
-    <html lang="es">
-
+<!DOCTYPE html>
+<html lang="es">
     <head>
-        <title>Ejercicio 1</title>
+        <title>Ejercicio 1 Ficheros</title>
         <meta charset="UTF-8">
     </head>
-
     <body>
-        <h1>Ejercicio 1</h1>
-        <p>
-            Realizar un formulario que conste de dos cajas de texto: una para escribir los apellidos y la otra para el nombre. Añadiremos también un botón de Envío, de modo que al presionar el botón,
-            los datos apellidos y el nombre se motrarán en una página PHP. Si el usuario no escribe en alguna de las cajas, se deberá notificar diciendo "Faltan valores". Utilizar el método GET.
-            Realizarlo en un único documento.
-        </p>
-        <form action="index.php" method="GET" enctype="multipart/form-data">
-            <label for="nombre">Nombre: </label><input type="text" id="nombre" name="nombre" value="<?php if (isset($_GET['nombre'])) echo $_GET['nombre']; ?>">
-            <?php
-            if (isset($_GET["nombre"]) && $error_nombre) {
-                echo "<span class='error'>Faltan valores</span>";
-            }
-            ?>
-            <br />
-            <label for="apellidos">Apellidos: </label><input type="text" name="apellidos" id="apellidos" value="<?php if (isset($_GET['apellidos'])) echo $_GET['apellidos']; ?>">
-            <?php
-            if (isset($_GET["apellidos"]) && $error_apellidos) {
-                echo "<span class='error'>Faltan valores</span>";
-            }
-            ?>
-            <br />
-            <button type="submit" name="btnEnviar">Enviar</button>
+        <h1>Ejercicio 1 Ficheros</h1>
+        <form action="index.php" method="post" enctype="multipart/form-data">
+            <p>
+                <label for="num">Introduzca un número entre 1 y 10 (ambos inclusive):</label>
+                <input type="text" name="num" id="num" value="<?php if(isset($_POST["num"])) echo $_POST["num"]?>">
+                <?php
+                    if(isset($_POST["btnGenerar"]) && $error_formulario){
+                        if($_POST["num"] == ""){
+                            echo "<span class='error'>* Campo vacío *</span>";
+                        }else{
+                            echo "<span class='error'>* No has introducido un número entre 1 y 10 *</span>";
+                        }
+                    }
+                ?>
+            </p>
+            <p>
+                <button type="submit" name="btnGenerar">Generar</button>
+            </p>
         </form>
-    <?php
-} else {
-    echo "<h1>Respuestas</h1>";
-    echo "<span><strong>Nombre: </strong>".$_GET["nombre"]."</span>";
-    echo "<br/>";
-    echo "<span><strong>Apellidos: </strong>".$_GET["apellidos"]."</span>";
-}
-    ?>
-    </body>
+        <?php
+            if(isset($_POST["btnGenerar"]) && !$error_formulario){
+                echo "<h2>Ejercicio realizado</h2>";
 
-    </html>
+                @$fd = fopen("tablas/tabla_".$_POST["num"].".txt", "w");
+
+                //PONEMOS LOS PERMISOS. sudo chmod 777 -R (ruta)
+                if(!$fd){
+                    die("<p>No se ha podido crear el fichero 'tabla_".$_POST["num"].".txt'</p>");
+                }
+
+                for($i = 1; $i <= 10; $i++){
+                    fwrite($fd, $i." * ".$_POST["num"]." = ".$i * $_POST["num"].PHP_EOL);
+                }
+
+                fclose($fd);
+
+                echo "<h2>Archivo generado con éxito: <a href='tablas/tabla_".$_POST["num"].".txt'>tabla_".$_POST["num"].".txt</a></h2>";
+            }
+        ?>
+    </body>
+</html>
