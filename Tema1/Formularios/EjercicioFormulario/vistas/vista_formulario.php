@@ -55,8 +55,8 @@
         </p>
         <p>
             <label id="sexo">Sexo:</label><br />
-            <input type="radio" id="hombre" name="sexo" for="sexo" <?php if (isset($_POST["btnGuardar"]) && $_POST["sexo"] == "hombre") echo "checked"; ?> /><label for="hombre">Hombre</label><br />
-            <input type="radio" id="mujer" name="sexo" for="sexo" <?php ?> /><label for="mujer">Mujer</label>
+            <input type="radio" id="hombre" name="sexo" for="sexo" value="hombre" <?php if (isset($_POST["btnGuardar"]) && $_POST["sexo"] == "hombre") echo "checked"?> /><label for="hombre">Hombre</label><br />
+            <input type="radio" id="mujer" name="sexo" for="sexo" value="mujer" <?php if (isset($_POST["btnGuardar"]) && $_POST["sexo"] == "mujer") echo "checked"?> /><label for="mujer">Mujer</label>
             <?php
             if (isset($_POST["btnGuardar"]) && $error_sexo) {
                 echo "<br/><span class='error'>*Seleccione sexo*</span>";

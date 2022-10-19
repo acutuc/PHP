@@ -7,11 +7,11 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-        <title>Ejercicio 1 Ficheros</title>
+        <title>Ejercicio 2 Ficheros</title>
         <meta charset="UTF-8">
     </head>
     <body>
-        <h1>Ejercicio 1 Ficheros</h1>
+        <h1>Ejercicio 2 Ficheros</h1>
         <form action="index.php" method="post" enctype="multipart/form-data">
             <p>
                 <label for="num">Introduzca un número entre 1 y 10 (ambos inclusive):</label>
