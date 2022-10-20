@@ -1,22 +1,24 @@
 <?php
-    if(@$_POST["btnEnviar"] == "reset"){
-        $_POST = array();
-    }
+if (isset($_POST["btnReset"])) {
+    $_POST = array();
+}
 
-    if(isset($_POST["btnEnviar"])){
-        $error_titulo = $_POST["titulo"] == "";
-        $error_actores = $_POST["actores"] == "";
-        $error_director = $_POST["director"] == "";
-        $error_guion = $_POST["guion"] == "";
-        $error_produccion = $_POST["produccion"] == "";
-        $error_anio = $_POST["anio"] == "" || !is_numeric($_POST["anio"]);
-        $error_nacionalidad = $_POST["nacionalidad"] == "";
-        $error_duracion = $_POST["duracion"] == "" || !is_numeric($_POST["duracion"]);
-        $error_restricciones = !isset($_POST["restricciones"]);
-        $error_sinopsis = $_POST["sinopsis"] == "";
+if (isset($_POST["btnEnviar"])) {
+    $error_titulo = $_POST["titulo"] == "";
+    $error_actores = $_POST["actores"] == "";
+    $error_director = $_POST["director"] == "";
+    $error_guion = $_POST["guion"] == "";
+    $error_produccion = $_POST["produccion"] == "";
+    $error_anio = $_POST["anio"] == "" || !is_numeric($_POST["anio"]);
+    $error_nacionalidad = $_POST["nacionalidad"] == "";
+    $error_duracion = $_POST["duracion"] == "" || !is_numeric($_POST["duracion"]);
+    $error_restricciones = !isset($_POST["restricciones"]);
+    $error_sinopsis = $_POST["sinopsis"] == "";
 
-        
-    }
+    $error_archivo = $_FILES["caratula"]["name"] == "" || $_FILES["caratula"]["error"] || $_FILES["caratula"]["type"] != "image/jpeg";
+
+    $error_formulario = $error_titulo || $error_actores || $error_director || $error_guion || $error_produccion || $error_anio || $error_nacionalidad || $error_duracion || $error_restricciones || $error_sinopsis;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -84,9 +86,9 @@
             <tr>
                 <td><input type="text" id="duracion" name="duracion" size="3" maxlength="3" value="<?php if (isset($_POST["duracion"])) echo $_POST["duracion"] ?>"><span>(minutos)</span></td>
                 <td>
-                    <input type="radio" id="todos-los-publicos" name="restricciones" value="todos los publicos"><label for="todos-los-publicos">Todos los públicos</label>&nbsp;
-                    <input type="radio" id="mayores-7-anios" name="restricciones" value="mayores 7 años"><label for="mayores-7-anios">Mayores de 7 años</label>&nbsp;
-                    <input type="radio" id="mayores-18-anios" name="restricciones" value="mayores 18 años"><label for="mayores-18-anios">Mayores de 18 años</label>
+                    <input type="radio" id="todos-los-publicos" name="restricciones" value="todos los publicos" <?php if(isset($_POST["restricciones"]) && $_POST["restricciones"] == "todos los publicos") echo "checked"?>><label for="todos-los-publicos">Todos los públicos</label>&nbsp;
+                    <input type="radio" id="mayores-7-anios" name="restricciones" value="mayores 7 años" <?php if(isset($_POST["restricciones"]) && $_POST["restricciones"] == "mayores 7 años") echo "checked"?>><label for="mayores-7-anios">Mayores de 7 años</label>&nbsp;
+                    <input type="radio" id="mayores-18-anios" name="restricciones" value="mayores 18 años" <?php if(isset($_POST["restricciones"]) && $_POST["restricciones"] == "mayores 18 años") echo "checked"?>><label for="mayores-18-anios">Mayores de 18 años</label>
                 </td>
             </tr>
             <tr>
@@ -97,14 +99,77 @@
             </tr>
             <tr>
                 <td><label for="caratula">Carátula</label></td>
-                <td><input type="file" id="caratula" name="caratula"></td>
+                <td><input type="file" id="caratula" name="caratula" accept="image/*"></td>
             </tr>
             <tr>
-                <td align=center><button type="submit" name="btnEnviar" value="submit">Enviar</button></td>
-                <td align=center><button type="submit" name="btnEnviar" value="reset">Borrar</button></td>
+                <td align=center><button type="submit" name="btnEnviar">Enviar</button></td>
+                <td align=center><button type="submit" name="btnReset">Borrar</button></td>
             </tr>
         </table>
     </form>
+    <?php
+    if (isset($_POST["btnEnviar"]) && $error_formulario) {
+        echo "<p class='error'>* HAY CAMPOS VACÍOS *</p>";
+    }
+    if (isset($_POST["btnEnviar"]) && $error_archivo) {
+        if ($_FILES["caratula"]["name"] != "") {
+            if ($_FILES["caratula"]["type"] != "image/jpeg") {
+                echo "<span class='error'>El archivo subido no es JPEG.</span>";
+            }
+        }
+    }
+    if (isset($_POST["btnEnviar"]) && !$error_formulario && !$error_archivo) {
+        echo "<h2>La película introducida es:</h2>";
+        echo "<p><strong>Título: </strong>" . $_POST["titulo"] . "</p>";
+        echo "<p><strong>Actores: </strong>" . $_POST["actores"] . "</p>";
+        echo "<p><strong>Director: </strong>" . $_POST["director"] . "</p>";
+        echo "<p><strong>Guión: </strong>" . $_POST["guion"] . "</p>";
+        echo "<p><strong>Producción: </strong>" . $_POST["produccion"] . "</p>";
+        echo "<p><strong>Año: </strong>" . $_POST["anio"] . "</p>";
+        echo "<p><strong>Nacionalidad: </strong>" . $_POST["nacionalidad"] . "</p>";
+        echo "<p><strong>Género: </strong>" . $_POST["genero"] . "</p>";
+        echo "<p><strong>Duración: </strong>" . $_POST["duracion"] . "</p>";
+        echo "<p><strong>Restricciones de edad: </strong>" . $_POST["restricciones"] . "</p>";
+        echo "<p><strong>Carátula: </strong></p>";
+        echo "<ul>";
+
+        echo "<li><strong>Nombre: </strong>" . $_FILES["caratula"]["name"] . "</li>";
+        echo "<li><strong>Tamaño: </strong>" . $_FILES["caratula"]["size"] . " bytes</li>";
+        echo "<li><strong>Fichero temporal: </strong>" . $_FILES["caratula"]["tmp_name"] . "</li>";
+        echo "<li><strong>Tipo: </strong>" . $_FILES["caratula"]["type"] . "</li>";
+        echo "<li><strong>Error: </strong>" . $_FILES["caratula"]["error"] . "</li>";
+
+        echo "</ul>";
+
+        $array_nombre = explode(".", $_FILES["caratula"]["name"]);
+
+        $extension = "";
+
+        if (count($array_nombre) > 1) {
+            $extension = "." . strtolower(end($array_nombre));
+        }
+
+        $extension = end($array_nombre);
+
+        $nombre_unico = "img_" . md5(uniqid(uniqid(), true));
+
+        $nombre_nuevo_archivo = $nombre_unico . $extension;
+
+        @$var = move_uploaded_file($_FILES["caratula"]["tmp_name"], "images/" . $nombre_nuevo_archivo);
+
+        if (!$var) {
+            echo "<p>La imagen no ha posidio ser movida por falta de permisos.</p>";
+        } else {
+            echo "<h3>La imagen ha sido subida con éxito</h3>";
+            echo "<img height = '200' width= '200' src='images/" . $nombre_nuevo_archivo . "'/>";
+        }
+
+        echo "<p><strong>Sinopsis: </strong></p>";
+        echo "<p>".$_POST["sinopsis"]."</p>";
+    }
+
+
+    ?>
 </body>
 
 </html>
