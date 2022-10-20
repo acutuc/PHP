@@ -13,6 +13,11 @@ if (isset($_POST["btnContar"])) {
 
 <body>
     <h1>Ejercicio 4</h1>
+    <p>
+        Realizar una web con un formulario que seleccione un fichero de texto y muestre por pantalla el número de palabras que contiene. Como ejemplo usar el
+        archivo adjunto (pag2000.txt). Controlar que el fichero seleccionado por el
+        usuario sea de tipo texto ( .txt) y que el tamaño máximo del archivo sea 2’5MB.
+    </p>
     <form action="index.php" method="post" enctype="multipart/form-data">
         <p>
             <label for="archivo">Seleccione un fichero de texto</label>
@@ -40,7 +45,7 @@ if (isset($_POST["btnContar"])) {
     if (isset($_POST["btnContar"]) && !$error_formulario) {
         $n_palabras = str_word_count(file_get_contents($_FILES["archivo"]["tmp_name"]));
         echo "<h2><Respuesta: " . $n_palabras . " palabras</h2>";
-    }else{
+    } else {
         echo "asdjoaisjd";
     }
     ?>

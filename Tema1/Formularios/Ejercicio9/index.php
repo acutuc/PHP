@@ -14,6 +14,8 @@
         $error_duracion = $_POST["duracion"] == "" || !is_numeric($_POST["duracion"]);
         $error_restricciones = !isset($_POST["restricciones"]);
         $error_sinopsis = $_POST["sinopsis"] == "";
+
+        
     }
 ?>
 <!DOCTYPE html>

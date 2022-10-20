@@ -1,5 +1,5 @@
 <?php
-if (@$_POST["btnCalcular"] == "reset") {
+if (isset($_POST["btnReset"])) {
     $_POST = array();
 }
 
@@ -51,8 +51,8 @@ if (isset($_POST["btnCalcular"])) {
             ?>
         </p>
         <p>
-            <button type="submit" name="btnCalcular" value="submit">Calcular</button>&nbsp;&nbsp;
-            <button type="submit" name="btnCalcular" value="reset">Borrar</button>
+            <button type="submit" name="btnCalcular">Calcular</button>&nbsp;&nbsp;
+            <button type="submit" name="btnReset">Borrar</button>
         </p>
     </form>
     <?php
