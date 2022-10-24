@@ -1,32 +1,50 @@
 <?php
-function mi_explode($separador, $texto){
-    $i = 0;
-    while(isset($texto[$i])){
-        if($texto[$i] == $separador){
+function mi_strlen($texto)
+{
+    $contador = 0;
+    while (isset($texto[$contador])) {
+        $contador++;
+    }
+    return $contador;
+}
 
+function mi_explode($separador, $texto)
+{
+    $aux = [];
+    $longitud_texto = mi_strlen($texto);
+
+    $i = 0;
+    while ($i < $longitud_texto && $texto[$i] == $separador) {
+        $i++;
+    }
+
+    if ($i < $longitud_texto) {
+        $j = 0;
+        $aux[$j] = $texto[$i];
+        for ($k = $i + 1; $k < $longitud_texto; $k++) {
+            if ($texto[$k] != $separador) {
+                $aux[$j] .= $texto[$k];
+            } else {
+                while ($k < $longitud_texto && $texto[$k] == $separador) {
+                    $k++;
+                }
+                if ($k < $longitud_texto) {
+                    $j++;
+                    $aux[$j] = $texto[$k];
+                }
+            }
         }
     }
-    switch ($_POST["separador"]) {
-        case 0:
-            $separador = ",";
-            break;
-        case 1:
-            $separador = ";";
-            break;
-        case 2:
-            $separador = " ";
-            break;
-        case 3:
-            $separador = ":";
-            break;
-    }
-    $arrVacio = [];
 
+    return $aux;
+}
 
+if (isset($_POST["btnEnviar"])) {
+    $error_formulario = $_POST["texto"] == "";
 }
 
 
-if (isset($_POST["btnEnviar"])) {
+if (isset($_POST["btnEnviar"]) && !$error_formulario) {
 }
 ?>
 <!DOCTYPE html>
@@ -50,20 +68,24 @@ if (isset($_POST["btnEnviar"])) {
     <form action="ejercicio3.php" method="post" enctype="multipart/form-data">
         <label for="separador">Elija separador: </label>
         <select id="separador" name="separador">
-            <option value="0" <?php if (isset($_POST["separador"]) && $_POST["separador"] == "0") echo "selected" ?>>,</option>
-            <option value="1" <?php if (isset($_POST["separador"]) && $_POST["separador"] == "1") echo "selected" ?>>;</option>
-            <option value="2" <?php if (isset($_POST["separador"]) && $_POST["separador"] == "2") echo "selected" ?>> </option>
-            <option value="3" <?php if (isset($_POST["separador"]) && $_POST["separador"] == "3") echo "selected" ?>>:</option>
+            <option value="," <?php if (isset($_POST["separador"]) && $_POST["separador"] == ",") echo "selected" ?>>,</option>
+            <option value=";" <?php if (isset($_POST["separador"]) && $_POST["separador"] == ";") echo "selected" ?>>;</option>
+            <option value=" " <?php if (isset($_POST["separador"]) && $_POST["separador"] == " ") echo "selected" ?>> </option>
+            <option value=":" <?php if (isset($_POST["separador"]) && $_POST["separador"] == ":") echo "selected" ?>>:</option>
         </select>
         <input type="text" name="texto" id="texto" value="<?php if (isset($_POST["texto"])) echo $_POST["texto"] ?>">
+        <?php
+        if (isset($_POST["btnEnviar"]) && $error_formulario) {
+            echo "<span class= 'error'>*Campo vacío*</span>";
+        }
+        ?>
         <p>
             <button type="submit" name="btnEnviar">Enviar</button>
         </p>
     </form>
     <?php
     if (isset($_POST["btnEnviar"])) {
-        print_r($_POST);
-        echo "<p>El texto, según el separador, tiene: <strong>".mi_strlen($_POST["separador"], $_POST["texto"])."</strong> palabras.</p>";
+        echo "<p>El texto, según el separador, tiene: <strong>" . count(mi_explode($_POST["separador"], $_POST["texto"])) . "</strong> palabras.</p>";
     }
     ?>
 </body>
