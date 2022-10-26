@@ -54,11 +54,20 @@ if (isset($_POST["btnEnviar"])) {
     <title>Ejercicio 4</title>
     <meta charset="UTF-8">
     <style>
-        th{
+        th {
             background-color: lightgrey;
         }
-        td{
-            text-align:center;
+
+        td {
+            text-align: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            text-align: center;
+            border: 1px solid black;
+            margin: 0 auto;
+            width: 80%;
         }
     </style>
 </head>
@@ -68,7 +77,8 @@ if (isset($_POST["btnEnviar"])) {
     <?php
     @$fd = fopen("Horario/horarios.txt", "r");
 
-    if (!$fd) { ?>
+    if (!$fd) {
+    ?>
         <h2>No se ha encontrado el archivo <em>Horario/horarios.txt</em></h2>
         <form action="ejercicio4.php" method="post" enctype="multipart/form-data">
             <p>
@@ -97,6 +107,7 @@ if (isset($_POST["btnEnviar"])) {
         </form>
 
         <?php
+        //PARA CUANDO NO TENEMOS LOS PERMISOS EN LA CARPETA:
         if (isset($_POST["subir"]) && !$error_fichero) {
             echo "No se ha podido subir el archivo";
         }
@@ -116,6 +127,16 @@ if (isset($_POST["btnEnviar"])) {
                         } else {
                             echo "<option value='" . $fila_datos[0] . "'>" . $fila_datos[0] . "</option>";
                         }
+                        //RECOGEMOS LOS HORARIOS DE LOS PROFESORES EN UN NUEVO ARRAY:
+                        for($i = 1; $i < count($fila_datos);$i += 3){//Día, hora, clase
+                            if(isset($horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i+1]])){
+                                $horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i+1]].=" / ".$fila_datos[$i+2];
+                            }else{
+                                $horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i+1]] = $fila_datos[$i+2];
+                            }
+                            
+                        }                        
+
                     }
                     ?>
                 </select>
@@ -125,11 +146,11 @@ if (isset($_POST["btnEnviar"])) {
     <?php
 
         if (isset($_POST["btnVerHorario"])) {
-            
-            
+
+
             echo "<table border='1'>";
 
-            echo "<caption>Horario del Profesor: <em>".$_POST["profesor"]."</em></caption>";
+            echo "<caption>Horario del Profesor: <em>" . $_POST["profesor"] . "</em></caption>";
 
             echo "<tr>";
             echo "<th></th>";
@@ -140,35 +161,26 @@ if (isset($_POST["btnEnviar"])) {
             echo "<th>Viernes</th>";
             echo "</tr>";
 
-            echo "<tr>";
-            echo "<th>8:15 - 9:15</th>";
-            echo "</tr>";
+            //CREAMOS UN ARRAY CON LAS HORAS PARA PINTARLAS EN LA TABLA:
+            $horas = array(1 => "8:15 - 9:15", "9:15 - 10:15", "10:15 - 11:15", "11:15 - 11:45", "11:45 - 12:45", "12:45 - 13:45", "13:45 - 14:45");
 
-            echo "<tr>";
-            echo "<th>9:15 - 10:15</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>10:15 - 11:15</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>11:15 - 11:45</th>";
-            echo "<td colspan='5'>RECREO</td>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>11:45 - 12:45</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>12:45 - 13:45</th>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<th>13:45 - 14:45</th>";
-            echo "</tr>";
-            
+            for ($hora = 1; $hora <= 7; $hora++) {
+                echo "<tr>";
+                echo "<th>" . $horas[$hora] . "</th>";
+                if ($hora == 4) {
+                    echo "<td colspan='5'>RECREO</td>";
+                } else {
+                    for ($dia = 1; $dia <= 5; $dia++) {
+                        if(isset($horario[$profesor][$dia][$hora])){
+                            echo "<td>".$horario[$profesor][$dia][$hora]."</td>";
+                        }else{
+                            echo "<td></td>";
+                        }
+                        
+                    }
+                }
+                echo "</tr>";
+            }
             echo "</table>";
         }
 
