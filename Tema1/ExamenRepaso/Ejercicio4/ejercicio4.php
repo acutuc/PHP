@@ -75,7 +75,7 @@ if (isset($_POST["btnEnviar"])) {
                 <label for="archivo">Introduce un archivo: (No mayor de 1MB)</label> <br>
                 <input type="file" name="archivo" id="archivo" accept=".txt">
                 <?php
-                if (isset($_POST["subir"]) && $error) {
+                if (isset($_POST["subir"]) && $error_fichero) {
                     if ($_FILES["archivo"]["type"] != "text/plain") {
                         echo "<span class='error'>*El archivo no es de tipo texto*</span>";
                     }
@@ -97,7 +97,7 @@ if (isset($_POST["btnEnviar"])) {
         </form>
 
         <?php
-        if (isset($_POST["subir"]) && !$error) {
+        if (isset($_POST["subir"]) && !$error_fichero) {
             echo "No se ha podido subir el archivo";
         }
     } else {    ?>
@@ -119,12 +119,12 @@ if (isset($_POST["btnEnviar"])) {
                     }
                     ?>
                 </select>
-                <button type="submit" name="verHorario">Ver horario</button>
+                <button type="submit" name="btnVerHorario">Ver horario</button>
             </p>
         </form>
     <?php
 
-        if (isset($_POST["verHorario"])) {
+        if (isset($_POST["btnVerHorario"])) {
             
             
             echo "<table border='1'>";
