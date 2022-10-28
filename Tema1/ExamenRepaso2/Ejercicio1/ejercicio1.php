@@ -1,33 +1,35 @@
 <?php
-function mi_substr($texto, $posicion){
+function mi_substr($texto, $posicion)
+{
     $var = "";
-    while((isset($texto[$posicion]))){
-        $var.= $texto[$posicion];
+    while ((isset($texto[$posicion]))) {
+        $var .= $texto[$posicion];
         $posicion++;
     }
     return $var;
 }
 
-function compruebaSub($texto1, $texto2){
-	$aux = "";
-	for($i = 0; $i < strlen($texto1); $i++){
-		
-			if($texto1[$i] == $texto2[0]){
-				for($j = 0; $j < strlen($texto2); $j++){
-					if(isset($texto1[$i + $j])){
-						if($texto1[$i + $j] == $texto2[$j]){
-							$aux.=$texto2[$j];
-						}
-				}
-			}
-				if($aux == $texto2){
-					return true;
-				}
-				
-				return false;
-					}
-	}
-	
+function compruebaSub($texto1, $texto2)
+{
+    $aux = "";
+    for ($i = 0; $i < strlen($texto1); $i++) {
+
+        if ($texto1[$i] == $texto2[0]) {
+            for ($j = 0; $j < strlen($texto2); $j++) {
+                if (isset($texto1[$i + $j])) {
+                    if ($texto1[$i + $j] == $texto2[$j]) {
+                        $aux .= $texto2[$j];
+                    }
+                }
+            }
+            if ($aux == $texto2) {
+                return true;
+            }else{
+                $aux = "";
+            }
+        }
+    }
+    return false;
 }
 
 if (isset($_POST["btnComprobar"])) {
@@ -86,13 +88,13 @@ if (isset($_POST["btnComprobar"])) {
     </form>
     <?php
     if (isset($_POST["btnComprobar"]) && !$error_formulario) {
-		  echo "<h2>Respuesta</h2>";
-		  if(compruebaSub($_POST["texto1"], $_POST["texto2"])){
-		  	echo "<p>\"Texto 2\" <strong>es una subcadena</strong> de \"Texto 1\"</p>";
-		  }else{
-		  	echo "<p>\"Texto 2\" <strong>NO es una subcadena</strong> de \"Texto 1\"</p>";
-		  }
-	}
+        echo "<h2>Respuesta</h2>";
+        if (compruebaSub($_POST["texto1"], $_POST["texto2"])) {
+            echo "<p>\"Texto 2\" <strong>es una subcadena</strong> de \"Texto 1\"</p>";
+        } else {
+            echo "<p>\"Texto 2\" <strong>NO es una subcadena</strong> de \"Texto 1\"</p>";
+        }
+    }
     ?>
 </body>
 
