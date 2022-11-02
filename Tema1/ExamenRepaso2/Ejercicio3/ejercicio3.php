@@ -1,3 +1,80 @@
+<?php
+function leerFichero($ruta)
+{
+    return nl2br(file_get_contents($ruta));
+}
+
+
+function obtenerCandidatos($texto, $tam)
+{
+    $aux = "";
+    $valores = [];
+    $j = 0;
+
+    for ($i = 0; $i < strlen($texto); $i++) {
+
+        if ($texto[$i] == " ") {
+
+            if (strlen($aux) == $tam) {
+                $valores[$j] = $aux;
+                $j++;
+            }
+
+            $aux = "";
+        } else {
+            $aux .= $texto[$i];
+        }
+
+        if (strlen($texto) == $i + 1 && strlen($aux) == $tam) {
+            $valores[$j] = $aux;
+        }
+    }
+    return $valores;
+}
+
+
+function codificarTexto($texto, $codificacion)
+{
+    $textoCod = "";
+    for ($i = 0; $i < strlen($texto); $i++) {
+
+        if (ord($texto[$i]) >= 65 && ord($texto[$i]) <= 90) {
+
+            if ((ord($texto[$i]) + $codificacion) > 90) {
+                $textoCod .= chr($codificacion - (90 - ord($texto[$i])) + 64);
+            } else {
+                $textoCod .= chr(ord($texto[$i]) + $codificacion);
+            }
+        } else {
+            $textoCod .= $texto[$i];
+        }
+    }
+    return $textoCod;
+}
+
+
+function obtenerClave($textos, $clave)
+{
+    $posibles = [];
+
+    foreach ($textos as $texto) {
+        $correcto = false;
+
+        if (ord($clave[0]) < ord($texto[0])) {
+            $posible = ord($texto[0]) - ord($clave[0]);
+            $correcto = true;
+        } else if (ord($clave[0]) > ord($texto[0])) {
+            $posible = (ord($texto[0]) - 64) + (90 - ord($clave[0]));
+            $correcto = true;
+        }
+
+        if ($correcto && codificarTexto($texto, ord("Z") - ord("A") + 1 - $posible) == $clave) {
+            array_push($posibles, $posible);
+        }
+    }
+    return $posibles;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -30,6 +107,20 @@
         “ Este fichero fue decodificado el Miércoles, día 30 de octubre de 2013 a
         las 11:17 horas. ”.
     </p>
+    <?php
+    $texto = "ND JZ TLREUF KVIDZEVJ VC VAVITZTZF VJKR WIRJV KZVEV JVEKZUF.
+   VJKRIRJ ZXLRC UV WVCZQ HLV WVCZO.
+   WVCZO WLV LE RCLDEF HLV JRTF DLP SLVER EFKR.";
+    //$texto="PUYK JGBOJ KY AT DOIU SAE MAGVU E KYZAJOUYU, SK ZOKTK KTGSUXGJU, SK KTIGTZGXOG DAVGXRK RG VURRG VUX JKHGPU JKR IARU";
+
+    $cod = obtenerClave(obtenerCandidatos($texto, 2), "SI");
+
+    echo "POSIBLES RESULTADOS: <br/>";
+
+    foreach ($cod as $i) {
+        echo "** " . codificarTexto($texto, ord("Z") - ord("A") + 1 - $i) . "</br>";
+    }
+    ?>
 </body>
 
 </html>

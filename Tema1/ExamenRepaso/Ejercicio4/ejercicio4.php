@@ -111,7 +111,8 @@ if (isset($_POST["btnEnviar"])) {
         if (isset($_POST["subir"]) && !$error_fichero) {
             echo "No se ha podido subir el archivo";
         }
-    } else {    ?>
+    } else {
+        ?>
         <h2>Horario de los profesores</h2>
 
         <form action="ejercicio4.php" method="post">
@@ -128,15 +129,13 @@ if (isset($_POST["btnEnviar"])) {
                             echo "<option value='" . $fila_datos[0] . "'>" . $fila_datos[0] . "</option>";
                         }
                         //RECOGEMOS LOS HORARIOS DE LOS PROFESORES EN UN NUEVO ARRAY:
-                        for($i = 1; $i < count($fila_datos);$i += 3){//Día, hora, clase
-                            if(isset($horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i+1]])){
-                                $horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i+1]].=" / ".$fila_datos[$i+2];
-                            }else{
-                                $horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i+1]] = $fila_datos[$i+2];
+                        for ($i = 1; $i < count($fila_datos); $i += 3) { //Día, hora, clase
+                            if (isset($horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i + 1]])) {
+                                $horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i + 1]] .= " / " . $fila_datos[$i + 2];
+                            } else {
+                                $horario[$fila_datos[0]][$fila_datos[$i]][$fila_datos[$i + 1]] = $fila_datos[$i + 2];
                             }
-                            
-                        }                        
-
+                        }
                     }
                     ?>
                 </select>
@@ -171,12 +170,11 @@ if (isset($_POST["btnEnviar"])) {
                     echo "<td colspan='5'>RECREO</td>";
                 } else {
                     for ($dia = 1; $dia <= 5; $dia++) {
-                        if(isset($horario[$profesor][$dia][$hora])){
-                            echo "<td>".$horario[$profesor][$dia][$hora]."</td>";
-                        }else{
+                        if (isset($horario[$profesor][$dia][$hora])) {
+                            echo "<td>" . $horario[$profesor][$dia][$hora] . "</td>";
+                        } else {
                             echo "<td></td>";
                         }
-                        
                     }
                 }
                 echo "</tr>";
