@@ -1,5 +1,29 @@
 <?php
-if (isset($_POST["btnGenerar"])) {
+function crear_fichero_polybio($fichero)
+{
+	$linea = "i/j";
+
+	for($i = 0; $i < 5; $i++){
+		$linea .=";".$i;
+	}
+	fputs($fichero, $linea.PHP_EOL);
+
+	$k = ord("A");
+
+	for($i = 1; $i <= 5; $i++){
+		$linea = $i;
+
+		for($j= 0; $j < 5; $j++){
+			if(chr($k) == "J"){
+				$k++;
+			}
+			$linea .= ";".chr($k);
+			$k++;
+		}
+
+
+		fputs($fichero, $linea.PHP_EOL);
+	}
 }
 ?>
 <!DOCTYPE html>
@@ -23,26 +47,13 @@ if (isset($_POST["btnGenerar"])) {
 			die("No se ha podido crear el fichero");
 		}
 
-		fputs($fichero, "i/j;1;2;3;4;5" . PHP_EOL);
+		echo "<h2>Respuesta</h2>";
 
-		for ($i = 1; $i < 6; $i++) {
-			$linea = $i;
-			for ($j = 65; $j < 91; $j++) {
+		crear_fichero_polybio($fichero);
 
-				if (strlen($linea) < 11 && $j != ord("J") && $j != ord("Ñ")) {
-					$linea .= ";" . chr($j);
-				}
+		echo "<textarea>" . file_get_contents("claves_polybios.txt") . "</textarea>";
 
-			}
-
-			fputs($fichero, $linea . PHP_EOL);
-			$linea = "";
-		}
-		//A == 65
-		//Z == 90
-		echo "<textarea>";
-
-		echo "</textarea>";
+		echo "<p>Fichero generado con éxito</p>";
 
 		fclose($fichero);
 	}
