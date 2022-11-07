@@ -1,4 +1,45 @@
 <?php
+function mi_explode($separador, $texto)
+{
+	$aux = [];
+	$palabra = "";
+	for($i = 0; $i < strlen($texto); $i++){
+
+		if($texto[$i] == $separador && $palabra != ""){
+			$aux[] = $palabra;
+			$palabra="";
+		}
+		if($texto[$i] != $separador){
+			$palabra .= $texto[$i];
+		}
+
+		if($i == strlen($texto) - 1){
+			$aux[] = $palabra;
+		}
+	}
+
+	return $aux;
+}
+
+function quitar_php_eol($texto){
+    $res = "";
+    for($i = 0; $i < strlen($texto)-strlen(PHP_EOL); $i++){
+        $res .= $texto[$i];
+    }
+}
+
+function codificar($i, $j, $fichero){
+    fseek($fichero,0);
+    $linea = fgets($fichero);//Se lee la primera línea.
+    $k = 0;
+    while($k < $i){
+        $linea = fgets ($fichero);
+        $k++;
+    }
+    $valores = mi_explode(";", quitar_php_eol($linea));
+    return $valores[$j];
+}
+
 if (isset($_POST["btnDecodificar"])) {
     $error_texto = $_POST["texto"] == "";
     $error_fichero = $_FILES["fichero"]["name"] == "" || $_FILES["fichero"]["error"] || $_FILES["fichero"]["size"] > 1250000 || $_FILES["fichero"]["type"] != "text/plain";
@@ -65,7 +106,8 @@ if (isset($_POST["btnDecodificar"])) {
                         } elseif ($texto[$i + 1] == "0") {
                             $respuesta .= $texto[$i];
                         }else{
-                            codificar();
+                            $res .= codificar($texto[$i], $texto[$i+1], $fichero);
+                            $i++;
                         }
                     } else {
                         $respuesta .= $texto[$i];
@@ -77,6 +119,8 @@ if (isset($_POST["btnDecodificar"])) {
                 $respuesta .= $texto[$i];
             }
         }
+        fclose($fichero);
+        echo "<p>El resultado de decodificar la frase: <strong>".$_POST["texto"]."</strong> es: ".$res."</p>";
     }
     ?>
 </body>
