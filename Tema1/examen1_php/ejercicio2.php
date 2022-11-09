@@ -38,7 +38,7 @@ if (isset($_POST["btnContar"])) {
 	<h1>Ejercicio 2. Longitud de las palabras extraídas</h1>
 	<p>
 	<form method="post" action="ejercicio2.php">
-		<label for="texto">Introduzca un Texto: </label><input type="text" name="texto" id="texto">
+		<label for="texto">Introduzca un Texto: </label><input type="text" name="texto" id="texto" value="<?php if(isset($_POST["texto"])) echo $_POST["texto"] ?>">
 		<?php
 		if (isset($_POST["texto"]) && $error_formulario) {
 			echo "<span class='error'>*Campo vacío*</span>";
