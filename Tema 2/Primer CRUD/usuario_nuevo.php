@@ -1,13 +1,27 @@
 <?php
 require "src/bd_config.php";
-function repetido($conex, ){
+function repetido($conexion, $tabla, $columna, $valor)
+{
+    $consulta = "SELECT " . $columna . " FROM " . $tabla . " WHERE " . $columna . " = '" . $valor . "'";
+
+    try {
+        $resultado = mysqli_query($conexion, $consulta);
+
+        $respuesta = mysqli_num_rows($resultado) > 0;
+
+        mysqli_free_result($resultado);
+    } catch (Exception $e) {
+        $respuesta = "Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion); 
+    }
+
+    return $respuesta;
 
 }
 
 
 function pag_error($titulo, $encabezado, $mensaje)
 {
-    return "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>".$titulo."</title></head><body><h1>".$encabezado."</h1><p>".$mensaje."</p></body></html>";
+    return "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>" . $titulo . "</title></head><body><h1>" . $encabezado . "</h1><p>" . $mensaje . "</p></body></html>";
 }
 
 if (isset($_POST["btnContinuar"])) {
@@ -24,14 +38,32 @@ if (isset($_POST["btnContinuar"])) {
             $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
             mysqli_set_charset($conexion, "utf8");
         } catch (Exception $e) {
-            die(pag_error("Nuevo usuario", "Nuevo Usuario", "Imposible conectar. Error nº: " . mysqli_connect_errno() . ". " . mysqli_connect_error()));
+            die(pag_error("Práctica 1 CRUD", "Nuevo Usuario", "Imposible conectar. Error nº: " . mysqli_connect_errno() . ". " . mysqli_connect_error()));
         }
 
         $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"]);
 
-        if(!$error_usuario){
-            echo "Inserto y Salto";
+        if(is_string($error_usuario)){
+            mysqli_close($conexion);
+            die(pag_error("Práctica 1 CRUD", "Nuevo Usuario", $error_usuario));
+        }else{
+            if (!$error_usuario) {
+                $consulta = "INSERT INTO usuarios (nombre, usuario, clave, email) VALUES ('".$_POST["nombre"]."','".$_POST["usuario"]."', '".md5($_POST["contraseña"])."', '".$_POST["email"]."')";
+
+                try {
+                    mysqli_query($conexion, $consulta);
+                    mysqli_close($conexion);
+                    header("Location:index.php");
+                    exit();              
+                } catch (Exception $e) {
+                    $mensaje = "Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion);
+                    mysqli_close($conexion);
+                    die(pag_error("Práctica 1 CRUD", "Nuevo Usuario", $mensaje));
+                }
+            }
         }
+
+        
     }
 }
 ?>
@@ -40,7 +72,7 @@ if (isset($_POST["btnContinuar"])) {
 
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo usuario</title>
+    <title>Práctica 1 CRUD</title>
 </head>
 
 <body>
@@ -58,7 +90,10 @@ if (isset($_POST["btnContinuar"])) {
             <label for="usuario">Usuario: </label><input type="text" name="usuario" id="usuario" value="<?php if (isset($_POST["usuario"])) echo $_POST["usuario"] ?>" maxlength="20">
             <?php
             if (isset($_POST["btnContinuar"]) && $error_usuario) {
-                echo "<span class='error'>*Campo vacío*</span>";
+                if ($_POST["usuario"] == "") {
+                    echo "<span class='error'>*Campo vacío*</span>";
+                }
+                echo "<span class='error'>*Usuario repetido*</span>";
             }
             ?>
         </p>
