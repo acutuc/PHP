@@ -1,5 +1,16 @@
 <?php
 require "src/bd_config.php";
+
+function salto_POST($action, $name){
+    echo "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title></title></head>";
+
+    echo "<body onload='document.getElementById(\"form_salto\").submit()'>";
+    echo "<form id='form_salto' action= '".$action."' method='post'>";
+    echo "<input type='hidden' name='".$name."' value='ok'>";
+    echo "</form>";
+    echo "</body>";
+}
+
 function repetido($conexion, $tabla, $columna, $valor)
 {
     $consulta = "SELECT " . $columna . " FROM " . $tabla . " WHERE " . $columna . " = '" . $valor . "'";
@@ -53,7 +64,7 @@ if (isset($_POST["btnContinuar"])) {
                 try {
                     mysqli_query($conexion, $consulta);
                     mysqli_close($conexion);
-                    header("Location:index.php");
+                    salto_POST("index.php", "usuario_nuevo");
                     exit();              
                 } catch (Exception $e) {
                     $mensaje = "Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion);

@@ -57,18 +57,26 @@ require "src/bd_config.php";
         echo "<tr><th>Nombre de usuario</th><th>Borrar</th><th>Editar</th></tr>";
         while ($tupla = mysqli_fetch_assoc($resultado)) {
             echo "<tr>";
-            echo "<td>" . $tupla["nombre"] . "</td>";
+            echo "<td><form action='index.php' method='post'><button type='submit' name='btnListar' value='" . $tupla["id_usuario"] . "'" . $tupla["nombre"] . "</button></form></td>";
             echo "<td><img src='img/borrar.png' alt='Borrar' title='Borrar usuario'</td>";
             echo "<td><img src='img/editar.png' alt='Editar' title='Editar usuario'</td>";
             echo "</tr>";
         }
         echo "</table>";
 
-        echo "<form class='centrar' action='usuario_nuevo.php' method='post'>";
-        echo "<p><button type='submit' name='btnNuevo'>Insertar nuevo usuario</button></p>";
-        echo "</form>";
-
         mysqli_free_result($resultado);
+
+        if (isset($_POST["usuario_nuevo"])) {
+            echo "<p>Usuario registrado con éxito</p>";
+        }
+
+        if (isset($_POST["btnListar"])) {
+            echo "<h2>Listado del Usuario " . $_POST["btnListar"] . "</h2>";
+        } else {
+            echo "<form class='centrar' action='usuario_nuevo.php' method='post'>";
+            echo "<p><button type='submit' name='btnNuevo'>Insertar nuevo usuario</button></p>";
+            echo "</form>";
+        }
 
         //Cerramos conexion
         mysqli_close($conexion);
