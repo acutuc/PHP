@@ -1,35 +1,12 @@
 <?php
 require "src/bd_config.php";
+require "src/funciones.php";
 
-function repetido($conexion, $tabla, $columna, $valor)
-{
-    $consulta = "select " . $columna . " from " . $tabla . " where " . $columna . "='" . $valor . "'";
-    try {
-        $resultado = mysqli_query($conexion, $consulta);
-        $respuesta = mysqli_num_rows($resultado) > 0;
-        mysqli_free_result($resultado);
-    } catch (Exception $e) {
-        $respuesta = "Imposible realizar la consulta. Error Nº " . mysqli_errno($conexion) . " : " . mysqli_error($conexion);
-    }
-
-    return $respuesta;
-}
-
-function dni_bien_escrito($texto)
-{
-    return strlen($texto) == 9 && is_numeric(substr($texto, 0, 8)) && strtoupper(substr($texto, 8, 1)) >= "A" && strtoupper((substr($texto, 8, 1))) <= "";
-}
-
-function LetraNIF($dni)
-{
-    return substr("TRWAGMYFPDXBNJZSQVHLCKEO", $dni % 23, 1);
-}
-
-if (isset($_POST["btnContinuarNuevo"])) {
+if (isset($_POST["btnContEditar"])) {
     $error_nombre = $_POST["nombre"] == "";
     $error_usuario = $_POST["usuario"] == "";
     $error_contraseña = $_POST["contraseña"] == "";
-    $error_dni = $_POST["dni"] = "" || !dni_bien_escrito($_POST["dni"]) || strtoupper(substr($_POST["dni"], 8, 1)) == LetraNIF(substr($_POST["dni"], 0, 8));
+    $error_dni = $_POST["dni"] = "" || !bien_escrito_dni($_POST["dni"]) || strtoupper(substr($_POST["dni"], 8, 1)) == LetraNIF(substr($_POST["dni"], 0, 8));
     $error_foto = $_FILES["foto"]["name"] != "" && ($_FILES["foto"]["error"] || !getimagesize($_FILES["foto"]["tmp_name"]) || $_FILES["foto"]["size"] > 50000);
 
     if (!$error_usuario || !$error_dni) { //Comprobamos si hay repetidos
@@ -37,15 +14,22 @@ if (isset($_POST["btnContinuarNuevo"])) {
             $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
             mysqli_set_charset($conexion, "uft8");
         } catch (Exception $e) {
-            die();
+            die(pag_error("Práctica 8","Práctica 8","Imposible conectar. Error Nº ".mysqli_connect_errno()." : ".mysqli_connect_error()));
         }
 
         if (!$error_usuario) {
-            $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"]);
+            $error_usuario = repetido($conexion, "usuarios", "usuario", $_POST["usuario"], "id_usuario", $_POST["btnContEditar"]);
 
             if (is_string($error_usuario)) {
                 mysqli_close($conexion);
-                die();
+                die(pag_error("Práctica 8","Práctica 8",$error_usuario));
+            }
+        }
+        if(!$error_dni){
+            $error_dni = repetido($conexion, "usuarios","dni",$_POST["dni"],"id_usuario",$_POST["btnContEditar"]);
+            if(is_string($error_dni)){
+                mysqli_close($conexion);
+                die(pag_error("Práctica 8","Práctica 8",$error_dni));
             }
         }
     }
@@ -108,6 +92,7 @@ if (isset($_POST["btnConfirmarBorrar"])) {
     try {
         $resultado = mysqli_query($conexion, $consulta);
     } catch (Exception $e) {
+        
     }
 }
 ?>
@@ -280,7 +265,7 @@ if (isset($_POST["btnConfirmarBorrar"])) {
             echo "<td>" . $tupla["id_usuario"] . "</td>";
             echo "<td><img src='img/" . $tupla["foto"] . "' title='Foto de perfil' alt='Foto de perfil'></td>";
             echo "<td><form method='post' action='index.php'><button class='enlace' name='btnListar' value='" . $tupla["id_usuario"] . "'>" . $tupla["nombre"] . "</button></form></td>";
-            echo "<td><form method='post' action='index.php'><button class='enlace' name='btnBorrar' value='" . $tupla["id_usuario"] . "'>Borrar</button>&nbsp;-&nbsp;<button class='enlace' name='btnEditar' value='" . $tupla["id_usuario"] . "'>Editar</button></form></td>";
+            echo "<td><form method='post' action='index.php'><input type='hidden' name='nombre_foto' value='no_imagen.jpg'><button class='enlace' name='btnBorrar' value='" . $tupla["id_usuario"] . "'>Borrar</button>&nbsp;-&nbsp;<button class='enlace' name='btnEditar' value='" . $tupla["id_usuario"] . "'>Editar</button></form></td>";
             echo "</tr>";
         }
 
