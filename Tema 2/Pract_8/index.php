@@ -82,7 +82,7 @@
                                 }
                                 catch(Exception $e)
                                 {
-                                    $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli__error($conexion);
+                                    $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli_error($conexion);
                                     mysqli_close($conexion);
                                     die(pag_error("Práctica 8","Práctica 8",$mensaje)); 
                                 }
@@ -97,7 +97,7 @@
             }
             catch(Exception $e)
             {
-                $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli__error($conexion);
+                $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli_error($conexion);
                 mysqli_close($conexion);
                 die(pag_error("Práctica 8","Práctica 8",$mensaje)); 
             }
@@ -178,7 +178,7 @@
                             }
                             catch(Exception $e)
                             {
-                                $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli__error($conexion);
+                                $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli_error($conexion);
                                 mysqli_close($conexion);
                                 die(pag_error("Práctica 8","Práctica 8",$mensaje)); 
                             }
@@ -192,7 +192,7 @@
             }
             catch(Exception $e)
             {
-                $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli__error($conexion);
+                $mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli_error($conexion);
                 mysqli_close($conexion);
                 die(pag_error("Práctica 8","Práctica 8",$mensaje)); 
             }
@@ -229,7 +229,7 @@
 		}
 		catch(Exception $e)
 		{
-			$mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli__error($conexion);
+			$mensaje="Imposible realizar la consulta. Error Nº ".mysqli_errno($conexion)." : ".mysqli_error($conexion);
 			mysqli_close($conexion);
 			die(pag_error("Práctica 8","Práctica 8",$mensaje)); 
 		}
