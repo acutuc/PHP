@@ -35,4 +35,9 @@ function LetraNIF($dni)
     return substr("TRWAGMYFPDXBNJZSQVHLCKEO", $dni%23, 1);
 }
 
+function valido_dni($texto)
+{
+    return strtoupper(substr($texto,8,1))==LetraNIF(substr($texto,0,8));
+}
+
 ?>
