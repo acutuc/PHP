@@ -1,5 +1,7 @@
 <?php
 require "src/bd_config.php";
+
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -61,9 +63,10 @@ try {
         echo "<tr>";
 
         echo "<td>" . $tupla["idPelicula"] . "</td>";
-        echo "<td><form action='index.php' method='post'><button type='submit' name='btnListar' class='enlace' value='" . $tupla["titulo"] . "'>" . $tupla["titulo"] . "</button></form></td>";
+        echo "<td><form action='index.php' method='post'><button type='submit' name='btnListar' class='enlace' value='" . $tupla["idPelicula"] . "'>" . $tupla["titulo"] . "</button></form></td>";
         echo "<td><img src='Img/" . $tupla["caratula"] . "' title='Imagen carátula' alt='Imagen carátula'</td>";
-        echo "<td><form action='index.php' method='post'><button type='submit' name='btnBorrar' value='" . $tupla["idPelicula"] . "' class='enlace'>Borrar</button>&nbsp; - &nbsp; <button type='submit' name='btnEditar' value='" . $tupla["idPelicula"] . "' class='enlace'>Editar</button></form></td>";
+        echo "<td><form action='index.php' method='post'><input type='hidden' name='nombre_caratula' value='" . $tupla["caratula"] . "'><button type='submit' name='btnBorrar' value='" . $tupla["idPelicula"] . "' class='enlace'>Borrar</button>&nbsp; - &nbsp; <button type='submit' name='btnEditar' value='" . $tupla["idPelicula"] . "' class='enlace'>Editar</button></form></td>";
+        //ATENCIÓN ARRIBA. Input hidden.
 
         echo "</tr>";
     }
@@ -71,7 +74,6 @@ try {
     echo "</table>";
 
     mysqli_free_result($resultado);
-    mysqli_close($conexion);
 } catch (Exception $e) {
     $mensaje = "Imposible realizar la consulta. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . ".";
     mysqli_close($conexion);
@@ -80,22 +82,25 @@ try {
 
 //3. Operaciones CRUD.
 
-//Listar:
+//3.1 Listar:
 if (isset($_POST["btnListar"])) {
-    echo "<h3>" . $_POST["btnListar"] . "</h3>";
+    echo "<h3>Película con ID: " . $_POST["btnListar"] . "</h3>";
 
-    $consulta = "SELECT * FROM peliculas WHERE titulo='" . $_POST["btnListar"] . "'";
+    $consulta = "SELECT * FROM peliculas WHERE idPelicula='" . $_POST["btnListar"] . "'";
 
     try {
         $resultado = mysqli_query($conexion, $consulta);
 
-        if(mysqli_num_rows($resultado) > 0){
+        if (mysqli_num_rows($resultado) > 0) {
+
             $datos_usuario = mysqli_fetch_assoc($resultado);
 
-            echo "<p><strong>Título: </strong></p>";
-            echo "<p><strong>Director: </strong></p>";
-            echo "<p><strong>Sinopsis: </strong></p>";
-            echo "<p><strong>Temática: </strong></p>";
+            echo "<p><strong>Título: </strong>" . $datos_usuario["titulo"] . "</p>";
+            echo "<p><strong>Director: </strong>" . $datos_usuario["director"] . "</p>";
+            echo "<p><strong>Sinopsis: </strong>" . $datos_usuario["sinopsis"] . "</p>";
+            echo "<p><strong>Temática: </strong>" . $datos_usuario["tematica"] . "</p>";
+            echo "<p><strong>Carátula: </strong></p>";
+            echo "<p><img src='Img/" . $datos_usuario["caratula"] . "' alt='Carátula' title='Carátula'></img></p>";
         }
     } catch (Exception $e) {
         $mensaje = "Imposible realizar la consulta. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . ".";
@@ -103,6 +108,42 @@ if (isset($_POST["btnListar"])) {
         die($conexion);
     }
 }
+
+//3.2 Borrar:
+if (isset($_POST["btnBorrar"])) {
+    echo "<h3>Borrado de la película con ID: " . $_POST["btnBorrar"] . "</h3>";
+    echo "<p>¿Seguro?</p>";
+    echo "<p>";
+    echo "<form action='index.php' method='post'><input type='hidden' name='nombre_caratula' value='".$_POST["nombre_caratula"]."'" . $_POST["nombre_caratula"] . "'><button type='submit' action='index.php'>Volver</button><button type='submit' value='" . $_POST["btnBorrar"] . "' name='btnContinuarBorrar'>Continuar</button></form>"; //ATENCIÓN. Input hidden.
+    echo "</p>";
+    //VAMOS ARRIBA
+}
+
+//3.2.1 Confirmación borrado.
+if (isset($_POST["btnContinuarBorrar"])) {
+    $consulta = "DELETE FROM peliculas WHERE idPelicula = '" . $_POST["btnContinuarBorrar"] . "'";
+
+    try {
+        mysqli_query($conexion, $consulta);
+        $mensaje_accion = "Usuario borrado con éxito"; //MENSAJE ACCIÓN.
+        //BORRAMOS FOTO SI ES DIFERENTE A no_imagen.jpg
+        if ($_POST["nombre_caratula"] != "no_imagen.jpg" && is_file("Img/" . $_POST["nombre_caratula"])) {
+            unlink("Img/" . $_POST["nombre_caratula"]);
+        }
+    } catch (Exception $e) {
+        $mensaje = "Imposible realizar la consulta. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . ".";
+        mysqli_close($conexion);
+        die($conexion);
+    }
+}
+
+//Mensaje acción:
+if (isset($mensaje_accion)) {
+    echo "<p>" . $mensaje_accion . "</p>";
+}
+
+//Cerramos conexión
+mysqli_close($conexion);
 ?>
 
 </html>
