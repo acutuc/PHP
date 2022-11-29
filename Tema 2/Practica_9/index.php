@@ -10,11 +10,6 @@ require "src/bd_config.php";
     <title>Práctica 9</title>
     <meta charset="UTF-8">
     <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
 
         img {
             height: 100px;
@@ -27,12 +22,14 @@ require "src/bd_config.php";
             border: 1px solid black;
             border-collapse: collapse;
         }
-
         .enlace {
             cursor: pointer;
             background: none;
             border: none;
             color: blue;
+        }
+        h1 {
+            text-align:center;
         }
     </style>
 </head>
@@ -41,6 +38,7 @@ require "src/bd_config.php";
     <h1>Práctica 9</h1>
 </body>
 <?php
+
 //1. Conectamos con la base de datos:
 try {
     $conexion = mysqli_connect(SERVIDOR_BD, USUARIO_BD, CLAVE_BD, NOMBRE_BD);
@@ -114,7 +112,7 @@ if (isset($_POST["btnBorrar"])) {
     echo "<h3>Borrado de la película con ID: " . $_POST["btnBorrar"] . "</h3>";
     echo "<p>¿Seguro?</p>";
     echo "<p>";
-    echo "<form action='index.php' method='post'><input type='hidden' name='nombre_caratula' value='".$_POST["nombre_caratula"]."'" . $_POST["nombre_caratula"] . "'><button type='submit' action='index.php'>Volver</button><button type='submit' value='" . $_POST["btnBorrar"] . "' name='btnContinuarBorrar'>Continuar</button></form>"; //ATENCIÓN. Input hidden.
+    echo "<form action='index.php' method='post'><input type='hidden' name='nombre_caratula' value='" . $_POST["nombre_caratula"] . "'" . $_POST["nombre_caratula"] . "'><button type='submit' action='index.php'>Volver</button><button type='submit' value='" . $_POST["btnBorrar"] . "' name='btnContinuarBorrar'>Continuar</button></form>"; //ATENCIÓN. Input hidden.
     echo "</p>";
     //VAMOS ARRIBA
 }
@@ -144,6 +142,7 @@ if (isset($mensaje_accion)) {
 
 //Cerramos conexión
 mysqli_close($conexion);
+
 ?>
 
 </html>
