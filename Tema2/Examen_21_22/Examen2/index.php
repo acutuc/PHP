@@ -91,6 +91,7 @@ function error_page($title, $body)
     </form>
     <?php
 
+    //Cuando se pulse el botón "Ver horario" o "Editar" en la tabla:
     if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"])) {
         echo "<h2>Horario del Profesor : <em>" . $nombre_profesor . "</em></h2>";
 

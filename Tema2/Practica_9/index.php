@@ -1,6 +1,58 @@
 <?php
 require "src/bd_config.php";
 
+//3.2.1. Volvemos a conectar con la base de datos:
+try {
+    $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_videoclub");
+    mysqli_set_charset($conexion, "utf8");
+} catch (Exception $e) {
+    $mensaje = "No se ha podido realizar la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion);
+}
+
+//3.2.2. Confirmación borrado.
+if (isset($_POST["btnContinuarBorrar"])) {
+    $consulta = "DELETE FROM peliculas WHERE idPelicula = '" . $_POST["btnContinuarBorrar"] . "'";
+    //Borrado de la imagen si es diferente a no_imagen.jpg :
+    try {
+        mysqli_query($conexion, $consulta);
+        $mensaje_accion = "Usuario borrado con éxito"; //MENSAJE ACCIÓN.
+        //BORRAMOS FOTO SI ES DIFERENTE A no_imagen.jpg
+        if ($_POST["nombre_caratula"] != "no_imagen.jpg" && is_file("Img/" . $_POST["nombre_caratula"])) {
+            unlink("Img/" . $_POST["nombre_caratula"]);
+        }
+    } catch (Exception $e) {
+        $mensaje = "Imposible realizar la consulta. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . ".";
+        mysqli_close($conexion);
+        die($mensaje);
+    }
+}
+
+//3.3.1. Confirmación agregar:
+if (isset($_POST["btnConfirmarAgregar"])) {
+
+    $error_titulo = $_POST["titulo"] == "";
+    $error_director = $_POST["director"] == "";
+    $error_tematica = $_POST["tematica"] == "";
+    $error_sinopsis = $_POST["sinopsis"] == "";
+    //ATENCIÓN EN FILES:
+    $error_caratula = $_FILES["caratula"]["name"] != "" && ($_FILES["caratula"]["tmp_name"] || !getimagesize($_FILES["caratula"]["tmp_name"]) || $_FILES["caratula"]["size"] > 1000000);
+
+    $error_formulario = $error_titulo || $error_director || $error_sinopsis || $error_tematica || $error_caratula;
+
+    //Si no hay error, insertamos.
+    if (!$error_formulario) {
+        $consulta = "INSERT INTO peliculas (titulo, director, sinopsis, tematica) VALUES ('" . $_POST["titulo"] . "', '" . $_POST["director"] . "', '" . $_POST["sinopsis"] . "', '" . $_POST["tematica"] . "')";
+
+        try {
+            mysqli_query($conexion, $consulta);
+            $mensaje_accion = "<p>Película insertada con éxito</p>";
+        } catch (Exception $e) {
+            $mensaje = "Imposible realizar la consulta. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . ".";
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -10,7 +62,6 @@ require "src/bd_config.php";
     <title>Práctica 9</title>
     <meta charset="UTF-8">
     <style>
-
         img {
             height: 100px;
             width: auto;
@@ -22,14 +73,16 @@ require "src/bd_config.php";
             border: 1px solid black;
             border-collapse: collapse;
         }
+
         .enlace {
             cursor: pointer;
             background: none;
             border: none;
             color: blue;
         }
+
         h1 {
-            text-align:center;
+            text-align: center;
         }
     </style>
 </head>
@@ -114,25 +167,32 @@ if (isset($_POST["btnBorrar"])) {
     echo "<p>";
     echo "<form action='index.php' method='post'><input type='hidden' name='nombre_caratula' value='" . $_POST["nombre_caratula"] . "'" . $_POST["nombre_caratula"] . "'><button type='submit' action='index.php'>Volver</button><button type='submit' value='" . $_POST["btnBorrar"] . "' name='btnContinuarBorrar'>Continuar</button></form>"; //ATENCIÓN. Input hidden.
     echo "</p>";
-    //VAMOS ARRIBA
+    //ENVIAMOS EL VALUE DEL HIDDEN (MIRAR ARRIBA).
 }
 
-//3.2.1 Confirmación borrado.
-if (isset($_POST["btnContinuarBorrar"])) {
-    $consulta = "DELETE FROM peliculas WHERE idPelicula = '" . $_POST["btnContinuarBorrar"] . "'";
+//3.3. Insertar
+if (isset($_POST["btnAgregar"])) {
+?>
+    <form action="index.php" method="post" enctype="multipart/form-data">
+        <label for="titulo">Título de la película: </label><br>
+        <input type="text" name="titulo" id="titulo" value="<?php if (isset($_POST["titulo"])) echo $_POST["titulo"] ?>"><br><br>
 
-    try {
-        mysqli_query($conexion, $consulta);
-        $mensaje_accion = "Usuario borrado con éxito"; //MENSAJE ACCIÓN.
-        //BORRAMOS FOTO SI ES DIFERENTE A no_imagen.jpg
-        if ($_POST["nombre_caratula"] != "no_imagen.jpg" && is_file("Img/" . $_POST["nombre_caratula"])) {
-            unlink("Img/" . $_POST["nombre_caratula"]);
-        }
-    } catch (Exception $e) {
-        $mensaje = "Imposible realizar la consulta. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . ".";
-        mysqli_close($conexion);
-        die($conexion);
-    }
+        <label for="director">Director: </label><br>
+        <input type="text" name="director" id="director" value="<?php if (isset($_POST["director"])) echo $_POST["director"] ?>"><br><br>
+
+        <label for="sinopsis">Sinopsis: </label><br>
+        <textarea name="sinopsis" id="sinopsis"><?php if (isset($_POST["sinopsis"])) echo $_POST["sinopsis"] ?></textarea><br><br>
+
+        <label for="tematica">Temática: </label><br>
+        <input type="text" name="tematica" id="tematica" value="<?php if (isset($_POST["tematica"])) echo $_POST["tematica"] ?>"><br><br>
+
+        <label for="caratula">Inserte la carátula de la película: </label><br>
+        <input type="file" name="caratula" id="caratula" accept="image/*"><br><br>
+
+        <button type="submit" name="btnConfirmarAgregar">Añadir película</button>
+    </form>
+    <!--VOLVEMOS ARRIBA-->
+<?php
 }
 
 //Mensaje acción:

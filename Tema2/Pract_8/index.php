@@ -191,7 +191,7 @@ if (isset($_POST["btnContinuarBorrar"])) {
         }
 
         table {
-            border-collapse: collapse
+            border-collapse: collapse;
         }
 
         td img {
