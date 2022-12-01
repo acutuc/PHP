@@ -126,7 +126,8 @@ function error_page($title, $body)
                 for ($dia = 0; $dia < 5; $dia++) { //Creamos un botón por cada tramo horario, de cada día
                     echo "<td>";
                     if (isset($horario[$dia][$hora])) {
-                        echo $horario[$dia][$hora];
+                        echo "<p>".$horario[$dia][$hora]."</p>";
+                    }
                         echo "<form action='index.php' method='post'>";
                         //Hidden que envían el dia, hora y profesor.
                         echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'/>
@@ -139,9 +140,9 @@ function error_page($title, $body)
                 }
             }
             echo "</tr>";
+            echo "</table>";
         }
-        echo "</table>";
-    }
+        
     //IMPORTANTE FREE RESULT Y CERRAR CONEXION.
     mysqli_free_result($resultado);
     mysqli_close($conexion);
