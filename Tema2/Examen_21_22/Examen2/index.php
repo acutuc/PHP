@@ -60,10 +60,23 @@ function error_page($title, $body)
         die("<p>Imposible conectar a la base de datos. Error nº: " . mysqli_connect_errno() . ". " . mysqli_connect_error() . "</p></body></html>");
     }
 
+    //4. SI HEMOS PULSADO EL BOTÓN QUITAR:
+    if (isset($_POST["btnQuitar"])) {
+        try {
+            $consulta = "DELETE FROM horario_lectivo WHERE id_horario = '" . $_POST["btnQuitar"] . "'";
+            $resultado = mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            $mensaje = "<p>No se ha podido realiza la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+    }
+
     //2. HACEMOS LA CONSULTA
     try {
         $consulta = "SELECT id_usuario, nombre FROM usuarios";
         $resultado = mysqli_query($conexion, $consulta);
+        $mensaje_accion = "Hora quitada con éxito";
     } catch (Exception $e) {
         $mensaje = "<p>No se ha podido realiza la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
         mysqli_close($conexion);
@@ -92,7 +105,7 @@ function error_page($title, $body)
     <?php
 
     //Cuando se pulse el botón "Ver horario" o "Editar" en la tabla:
-    if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"])) {
+    if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"]) || isset($_POST["btnQuitar"])) {
         echo "<h2>Horario del Profesor : <em>" . $nombre_profesor . "</em></h2>";
 
         //Hacemos consulta a la base de datos (DESPUÉS DE PINTAR LA TABLA)
@@ -114,35 +127,112 @@ function error_page($title, $body)
         }
 
         //Pintamos la tabla:
-        $horas = ["8:15 - 9:15", "9:15 - 10:15", "10:15 - 11:15", "11:15 - 11:45", "11:45 - 12:45", "12:45 - 13:45", "13:45 - 14:45"];
+        $horas = array(1 => "8:15 - 9:15", "9:15 - 10:15", "10:15 - 11:15", "11:15 - 11:45", "11:45 - 12:45", "12:45 - 13:45", "13:45 - 14:45");
+        $dias = array(1 => "Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
         echo "<table>";
-        echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th></tr>";
-        for ($hora = 0; $hora < count($horas); $hora++) {
+        echo "<tr>";
+        //Días de la semana:
+        for ($dia = 1; $dia < count($dias); $dia++) {
+            echo "<th>" . $dias[$dia] . "</th>";
+        }
+
+        echo "</tr>";
+        //Diferentes tramos horarios:
+        for ($hora = 1; $hora < count($horas) + 1; $hora++) {
             echo "<tr>";
             echo "<th>" . $horas[$hora] . "</th>";
-            if ($hora == 3) {
+            if ($hora == 4) {
                 echo "<td colspan='5'>RECREO</td>";
             } else {
                 for ($dia = 0; $dia < 5; $dia++) { //Creamos un botón por cada tramo horario, de cada día
                     echo "<td>";
                     if (isset($horario[$dia][$hora])) {
-                        echo "<p>".$horario[$dia][$hora]."</p>";
+                        echo "<p>" . $horario[$dia][$hora] . "</p>";
                     }
-                        echo "<form action='index.php' method='post'>";
-                        //Hidden que envían el dia, hora y profesor.
-                        echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'/>
+                    echo "<form action='index.php' method='post'>";
+                    //Hidden que envían el dia, hora y profesor.
+                    echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'/>
                         <input type='hidden' name='dia' value='" . $dia . "'>
                         <input type='hidden' name='hora' value='" . $hora . "'>";
-                        echo "<button class='enlace' name='btnEditar'>Editar</button>";
-                        echo "</form>";
-                        echo "</td>";
-                    }
+                    echo "<button class='enlace' name='btnEditar'>Editar</button>";
+                    echo "</form>";
+                    echo "</td>";
                 }
             }
-            echo "</tr>";
-            echo "</table>";
         }
-        
+        echo "</tr>";
+        echo "</table>";
+    }
+
+    //Si pulsamos cualquier botón editar de la tabla:
+    if (isset($_POST["btnEditar"]) || isset($_POST["btnQuitar"]) || isset($_POST["btnAgregar"])) {
+        if ($_POST["hora"] > 4) {
+            echo "<h2>Editando la " . ($_POST["hora"] - 1) . "º hora (" . $horas[$_POST["horas"]] . ") del " . $dias[$_POST["dias"]] . "</h2>";
+        } else {
+            echo "<h2>Editando la " . ($_POST["hora"]) . "º hora (" . $horas[$_POST["horas"]] . ") del " . $dias[$_POST["dias"]] . "</h2>";
+        }
+
+        try {
+            $consulta = "SELECT grupos.nombre, horario_lectivo.id_horario
+                        FROM grupos, horario_lectivo 
+                        WHERE grupos.id_grupo = horario_lectivo.grupo and horario_lectivo.dia = '" . $_POST["dia"] . "' and horario_lectivo.hora = '" . $_POST["hora"] . "' and horario_lectivo.usuario = '" . $_POST["profesor"] . "'";
+            $resultado = mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            $mensaje = "<p>No se ha podido realiza la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+
+        if (isset($mensaje_accion)) {
+            echo "<p>" . $mensaje_accion . "</p>";
+        }
+
+        echo "<table>";
+        echo "<tr><th>Grupo</th><th>Acción</th></tr>";
+
+        while ($tupla = mysqli_fetch_assoc($resultado)) {
+            echo "<tr>";
+            echo "<td>" . $tupla["nombre"] . "</td>";
+            echo "<td><form action='index.php' method='post'>";
+            echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'";
+            echo "<input type='hidden' name='dia' value='" . $_POST["dia"] . "'";
+            echo "<input type='hidden' name='hora' value='" . $_POST["hora"] . "'";
+            echo "<button type='submit' name='btnQuitar' value='" . $tupla["id_horario"] . "'>Quitar</button></form></td>";
+            echo "</tr>";
+        }
+
+        echo "</table>";
+
+        try {
+            $clausula_where = "";
+            if (count($grupos) > 0) {
+                $clausula_where = "WHERE id_grupo not in (" . implode(",", $grupos) . ")";
+            }
+            $consulta = "SELECT * FROM grupos " . $clausula_where;
+            $resultado = mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            $mensaje = "<p>No se ha podido realiza la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+
+        if (mysqli_num_rows($resultado) > 0) {
+            echo "<form action='index.php' method='post'>";
+            echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'";
+            echo "<input type='hidden' name='dia' value='" . $_POST["dia"] . "'";
+            echo "<input type='hidden' name='hora' value='" . $_POST["hora"] . "'";
+            echo "<p>";
+            echo "<select name='grupo'>";
+            while($tupla = mysqli_fetch_assoc($resultado)){
+                echo "<option value='".$tupla["id_grupo"]."'>".$tupla["nombre"]."</option>";
+            }
+            echo "</select>";
+            echo "<button type='submit' name='btnAgregar' value=''>Añadir</button>";
+            echo "</p>";
+            echo "</form>";
+        }
+    }
+
     //IMPORTANTE FREE RESULT Y CERRAR CONEXION.
     mysqli_free_result($resultado);
     mysqli_close($conexion);
