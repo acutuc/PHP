@@ -65,6 +65,7 @@ function error_page($title, $body)
         try {
             $consulta = "DELETE FROM horario_lectivo WHERE id_horario = '" . $_POST["btnQuitar"] . "'";
             $resultado = mysqli_query($conexion, $consulta);
+            $mensaje_accion = "Hora quitada con éxito.";
         } catch (Exception $e) {
             $mensaje = "<p>No se ha podido realiza la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
             mysqli_close($conexion);
@@ -72,11 +73,13 @@ function error_page($title, $body)
         }
     }
 
+    //5. SI HEMOS PULSADO EL BOTÓN AÑADIR:
+    
+
     //2. HACEMOS LA CONSULTA
     try {
         $consulta = "SELECT id_usuario, nombre FROM usuarios";
         $resultado = mysqli_query($conexion, $consulta);
-        $mensaje_accion = "Hora quitada con éxito";
     } catch (Exception $e) {
         $mensaje = "<p>No se ha podido realiza la conexión. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
         mysqli_close($conexion);
@@ -105,7 +108,7 @@ function error_page($title, $body)
     <?php
 
     //Cuando se pulse el botón "Ver horario" o "Editar" en la tabla:
-    if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"]) || isset($_POST["btnQuitar"])) {
+    if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"]) || isset($_POST["btnQuitar"]) || isset($_POST["btnAgregar"])) {
         echo "<h2>Horario del Profesor : <em>" . $nombre_profesor . "</em></h2>";
 
         //Hacemos consulta a la base de datos (DESPUÉS DE PINTAR LA TABLA)
@@ -128,11 +131,11 @@ function error_page($title, $body)
 
         //Pintamos la tabla:
         $horas = array(1 => "8:15 - 9:15", "9:15 - 10:15", "10:15 - 11:15", "11:15 - 11:45", "11:45 - 12:45", "12:45 - 13:45", "13:45 - 14:45");
-        $dias = array(1 => "Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
+        $dias = array("", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes");
         echo "<table>";
         echo "<tr>";
         //Días de la semana:
-        for ($dia = 1; $dia < count($dias); $dia++) {
+        for ($dia = 0; $dia < count($dias); $dia++) {
             echo "<th>" . $dias[$dia] . "</th>";
         }
 
@@ -223,8 +226,8 @@ function error_page($title, $body)
             echo "<input type='hidden' name='hora' value='" . $_POST["hora"] . "'";
             echo "<p>";
             echo "<select name='grupo'>";
-            while($tupla = mysqli_fetch_assoc($resultado)){
-                echo "<option value='".$tupla["id_grupo"]."'>".$tupla["nombre"]."</option>";
+            while ($tupla = mysqli_fetch_assoc($resultado)) {
+                echo "<option value='" . $tupla["id_grupo"] . "'>" . $tupla["nombre"] . "</option>";
             }
             echo "</select>";
             echo "<button type='submit' name='btnAgregar' value=''>Añadir</button>";
