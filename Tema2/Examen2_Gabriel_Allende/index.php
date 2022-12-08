@@ -5,168 +5,257 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exámen2 DWESE Curso 22-23</title>
-    <style>
-        table,
-        th,
-        td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-
-        .enlace {
-            text-decoration: underline;
-            background: none;
-            border: 0;
-            color: blue;
-            cursor: pointer;
-        }
-
-        #mensaje {
-            font-size: 20px;
-            color: blue;
-        }
-    </style>
+    <title>Examen 2 DWESE Curso 22-23</title>
 </head>
 
 <body>
     <h1>Notas de los alumnos</h1>
+
     <?php
-    //CONEXIÓN
+
+    //Conexion
     try {
         $conexion = mysqli_connect("localhost", "jose", "josefa", "bd_exam_colegio");
         mysqli_set_charset($conexion, "utf8");
     } catch (Exception $e) {
-        die("<p>Imposible conectar. Error nº: " . mysqli_connect_errno() . ". " . mysqli_connect_error() . "</p>");
+        die("<p>Error en la conexión a la bbdd Nº " . mysqli_connect_errno() . ": " . mysqli_connect_error()."</p></body></html>");
     }
 
-    //CONSULTA Y SELECT
-    try {
-        $consulta = "SELECT * FROM alumnos";
-        $resultado = mysqli_query($conexion, $consulta);
 
-        //Si obtenemos tuplas, montamos el select:
-        if (mysqli_num_rows($resultado) > 0) {
-            echo "<form action='index.php' method='post'>";
-            echo "<label for='alumno'>Seleccione un Alumno: </label>";
-            echo "<select id='alumno' name='alumno'>";
-            while ($tupla = mysqli_fetch_assoc($resultado)) {
-                if (isset($_POST["alumno"]) && $_POST["alumno"] == $tupla["cod_alu"]) {
-                    //SELECTED:
-                    echo "<option value='" . $tupla["cod_alu"] . "' selected>" . $tupla["nombre"] . "</option>";
-                    $nombre_alumno = $tupla["nombre"]; //atención aquí.
-                } else {
-                    echo "<option value='" . $tupla["cod_alu"] . "' >" . $tupla["nombre"] . "</option>";
-                }
-            }
-            echo "</select>";
-            echo "<button type='submit' name='btnListar'>Ver Notas</button></form>";
-        } else {
-            //Si no hay tuplas, cerramos conexión y mostramos la información de que no hay alumnos en la BD.
-            mysqli_close($conexion);
-            die("<p>En estos momentos no tenemos ningún alumno registrado en la BD</p>");
-        }
+    //Consulta alumnos
+
+    try {
+        $consulta = "SELECT nombre, cod_alu FROM alumnos";
+        $resultado = mysqli_query($conexion, $consulta);
     } catch (Exception $e) {
-        $mensaje = "<p>Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
+        $mensaje = "Imposible realizar consulta. Error " . mysqli_errno($conexion) . ": " . mysqli_error($conexion);
         mysqli_close($conexion);
         die($mensaje);
     }
 
 
+    if (mysqli_num_rows($resultado) > 0) { //Si hay alumnos los enseña
 
-    //LISTAR o btnAtras
-    if (isset($_POST["alumno"]) || isset($_POST["btnAtras"])) {
-        echo "<h2>Notas del alumno " . $nombre_alumno . "</h2>";
+        echo "<form action='index.php'  method='post'>
+                    <label for='alumno'>Seleccione un alumno</label>
+                    <select name='alumno' id='alumno'>";
 
-        try {
-            $consulta = "SELECT asignaturas.cod_asig, asignaturas.denominacion, notas.nota FROM asignaturas,notas WHERE asignaturas.cod_asig = notas.cod_asig AND cod_alu = '" . $_POST["alumno"] . "'";
-            $resultado = mysqli_query($conexion, $consulta);
-            echo "<table>";
-            echo "<tr><th>Asignatura</th><th>Nota</th><th>Acción</th></tr>";
-            while ($tupla = mysqli_fetch_assoc($resultado)) {
-                echo "<tr>";
-                echo "<td>" . $tupla["denominacion"] . "</td>";
-                echo "<td>" . $tupla["nota"] . "</td>";
-                echo "<td><form action='index.php' method='post'><input type='hidden' name='id' value='" . $_POST["alumno"] . "'><button type='submit' name='btnEditar' class='enlace' value='" . $tupla["cod_asig"] . "'>Editar</button> - <button type='submit' name='btnBorrar' value='" . $tupla["cod_asig"] . "'class='enlace'>Borrar</button></form></td>";
-                echo "</tr>";
-            }
-            echo "</table>";
-        } catch (Exception $e) {
-            $mensaje = "<p>Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
-            mysqli_close($conexion);
-            die($mensaje);
+        while ($tupla = mysqli_fetch_assoc($resultado)) {
+            if ($_POST["alumno"] == $tupla["cod_alu"]) {
+                echo "<option value='" . $tupla["cod_alu"] . "' selected>" . $tupla["nombre"] . "</option>";
+                $nombre = $tupla["nombre"];
+            } else
+                echo "<option value='" . $tupla["cod_alu"] . "'>" . $tupla["nombre"] . "</option>";
         }
 
-        //Cuando no  hay asignaturas por calificar
-        if (mysqli_num_rows($resultado) < 1) {
-            echo "<p>A <strong>" . $nombre_alumno . "</strong> no le quedan más asignaturas por calificar.</p>";
-        } else {
-    ?>
-            <form action="index.php" method="post">
-                <p>
-                    <label for="cod_asig">Asignaturas que le quedan por a <strong><?php echo $nombre_alumno ?></strong> aún por calificar</label>
-                    <select name="cod_asig" id="cod_asig">
-                        <?php
-                        while ($tupla = mysqli_fetch_assoc($resultado)) {
-                            echo "<option value='" . $tupla["cod_asig"] . "'>" . $tupla["denominacion"] . "</option>";
-                        }
-                        ?>
-                    </select>
-                    <input type="hidden" name="alumno" value="<?php echo $_POST["alumno"] ?>">
-                    <button type="submit" name="btnCalificar">Calificar</button>
-                </p>
-            </form>
-    <?php
+        echo "</select>";
+
+        echo " <button type='submit' name='boton_ver' >Ver notas</button>";
+        if (isset($nombre)) {
+            echo "<input type='hidden' name ='nombre' value= '" . $nombre . "'/>";
         }
+
+        echo "</form>";
+
+        mysqli_free_result($resultado);
+    } else { //Si no hay alumnos, mensaje
+        echo "<p>En estos momentos no tenemos ningún alumno registrado en la BD</p>";
     }
 
+    /****************BORRAR****************/
 
-    //BORRAR
-    if (isset($_POST["btnBorrar"])) {
+    if (isset($_POST["boton_borrar"])) {
+
         try {
-            $consulta = "DELETE FROM notas WHERE cod_alu = " . $_POST["alumno"]."AND cod_asig = ".$_POST["btnBorrar"];
+            $consulta = "DELETE FROM notas WHERE cod_asig = '" . $_POST['boton_borrar'] . "' AND cod_alu ='" . $_POST['alumno'] . "'";
             mysqli_query($conexion, $consulta);
-            $mensaje_accion = "¡¡Asignatura descalificada con Éxito!!";
+
+            $mensaje_accion = "¡¡Asignatura descalificada con éxito!!";
         } catch (Exception $e) {
-            $mensaje = "<p>Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
+            $mensaje = "Imposible realizar consulta. Error " . mysqli_errno($conexion) . ": " . mysqli_error($conexion);
             mysqli_close($conexion);
             die($mensaje);
         }
     }
 
-    //EDITAR
-    if (isset($_POST["btnEditar"])) {
-        try {
-            $consulta = "SELECT * FROM notas WHERE notas.cod_alu = " . $_POST["btnEditar"];
-            $resultado = mysqli_query($conexion, $consulta);
 
-            echo "<table>";
-            echo "<tr><th>Asignatura</th><th>Nota</th><th>Acción</th></tr>";
-            while ($tupla = mysqli_fetch_assoc($resultado)) {
-                echo "<form action='index.php' method='post'>";
-                echo "<tr>";
-                echo "<td>" . $tupla["cod_asig"] . "</td>";
-                echo "<td><input type='text' name='nota' value='" . $tupla["nota"] . "'></td>";
-                echo "<td><input type='hidden' name='id' value='" . $_POST["id"] . "'><button class='enlace' type='submit' name='btnCambiar'>Cambiar</button> - <button class='enlace' type='submit' name='btnAtras'>Atrás</button</form></td>";
-                echo "</tr>";
+    /**************************BOTON CAMBIAR******************** */
+
+    if (isset($_POST["boton_cambiar"])) {
+
+        $error_nota = !is_numeric($_POST["nota_nueva"]) || $_POST["nota_nueva"] < 0 || $_POST["nota_nueva"] > 10;
+
+
+        if (!$error_nota) {
+
+            try {
+                $consulta = "UPDATE notas SET nota = '" . $_POST["nota_nueva"] . "' WHERE cod_asig = '" . $_POST['boton_cambiar'] . "' AND cod_alu ='" . $_POST['alumno'] . "'";
+                mysqli_query($conexion, $consulta);
+
+                $mensaje_accion = "¡¡Nota cambiada con éxito!!";
+            } catch (Exception $e) {
+                $mensaje = "Imposible realizar consulta. Error " . mysqli_errno($conexion) . ": " . mysqli_error($conexion);
+                mysqli_close($conexion);
+                die($mensaje);
             }
-            echo "</table>";
-        } catch (Exception $e) {
-            $mensaje = "<p>Imposible conectar. Error nº: " . mysqli_errno($conexion) . ". " . mysqli_error($conexion) . "</p>";
-            mysqli_close($conexion);
-            die($mensaje);
         }
     }
 
-    //MENSAJE ACCIÓN
-    if (isset($mensaje_accion)) {
-        echo "<p id='mensaje'>" . $mensaje_accion . "</p>";
+
+    /****************************CALIFICAR ************ */
+
+    if(isset($_POST["boton_calificar"])){
+
+        try {
+            $consulta = "INSERT INTO notas (cod_asig, cod_alu, nota) VALUES (".$_POST["asignatura"].", ".$_POST["alumno"].", 0)";
+            mysqli_query($conexion, $consulta);
+
+            $mensaje_accion = "Nota calificada con un 0. Cambie la nota si lo estima necesario";
+        } catch (Exception $e) {
+            $mensaje = "Imposible realizar consulta. Error " . mysqli_errno($conexion) . ": " . mysqli_error($conexion);
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+
     }
 
-    //CIERRO CONEXIÓN Y LIBERO RESULTADO.
-    mysqli_free_result($resultado);
-    mysqli_close($conexion);
+    /************************VISTA NOTAS ********************* */
+
+    if (isset($_POST["boton_ver"]) || isset($_POST["boton_borrar"]) || isset($_POST["boton_editar"]) || isset($_POST["boton_cambiar"]) || isset($_POST["boton_atras"]) || isset($_POST["boton_calificar"])) {
+
+
+        try {
+            $consulta = "SELECT notas.nota, asignaturas.denominacion, notas.cod_asig
+                        FROM notas, asignaturas
+                        WHERE notas.cod_asig = asignaturas.cod_asig
+                        AND notas.cod_alu = '" . $_POST['alumno'] . "'";
+            $resultado = mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            $mensaje = "Imposible realizar consulta. Error " . mysqli_errno($conexion) . ": " . mysqli_error($conexion);
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+
+        echo "<h2>Notas del alumno " . $nombre . "</h2>";
+
+        /***************TABLA NOTAS*****************/
+
+        $calificadas = [];
+
+        echo "<table>";
+        echo "<tr><th>Asignatura</th><th>Nota</th><th>Acción</th></tr>";
+
+        while ($tupla = mysqli_fetch_assoc($resultado)) {
+
+            echo "<tr><td>" . $tupla["denominacion"] . "</td>";
+
+            //SI SE PULSA EDITAR
+            if ((isset($_POST["boton_cambiar"]) && $error_nota) || (isset($_POST["boton_editar"]) && $_POST["boton_editar"] == $tupla["cod_asig"]) || isset($_POST["boton_calificar"])) {
+
+                echo "<form action='index.php' method='post'>";
+
+
+
+                if (isset($_POST["boton_cambiar"]) && $error_nota) {
+
+                    echo    "<td><input type='text' name = 'nota_nueva' placeholder='Teclee un valor entre 0 y 10'/>";
+                    echo "<p class='error'>* No has introducido un valor válido de nota *</p>";
+                } else {
+                    echo    "<td><input type='text' name = 'nota_nueva' value='" . $tupla["nota"] . "'/>";
+                }
+
+
+
+                echo        "</td>";
+                echo "<td>
+                    
+                    <button name='boton_cambiar' value='" . $tupla["cod_asig"] . "'type='submit'>Cambiar</button>
+                     - 
+                    <button name='boton_atras' value='" . $tupla["cod_asig"] . "'type='submit'>Atras</button>
+                    <input type='hidden' name='alumno' value='" . $_POST['alumno'] . "'/>
+                    </form>
+                </td></tr>";
+            } else { //SI NO NORMAL
+
+                echo    "<td>" . $tupla["nota"] . "</td>
+                <td>
+                    <form action='index.php' method='post'>
+                    <button name='boton_editar' value='" . $tupla["cod_asig"] . "'type='submit'>Editar</button>
+                     - 
+                    <button name='boton_borrar' value='" . $tupla["cod_asig"] . "'type='submit'>Borrar</button>
+                    <input type='hidden' name='alumno' value='" . $_POST['alumno'] . "'/>
+                    </form>
+                </td></tr>";
+            }
+
+            $calificadas[] = $tupla["cod_asig"];
+        }
+
+        echo "</table>";
+        mysqli_free_result($resultado);
+
+
+
+        /*************MENSAJE DE ACCION **********************/
+
+        if (isset($mensaje_accion))
+            echo "<p class='accion'>" . $mensaje_accion . "</p>";
+
+
+        /****************ASIGNATURAS POR CALIFICAR*****************/
+
+        //SACA TODAS LAS ASIGNATURAS QUE NO ESTEN YA CALIFICADAS
+
+        try {
+            if (count($calificadas)>0)
+            $consulta = "SELECT * FROM asignaturas WHERE cod_asig NOT IN (" . implode(", ", $calificadas) . ")";
+            else
+            $consulta = "SELECT * FROM asignaturas WHERE cod_asig";
+            $resultado = mysqli_query($conexion, $consulta);
+        } catch (Exception $e) {
+            $mensaje = "Imposible realizar consulta. Error " . mysqli_errno($conexion) . ": " . mysqli_error($conexion);
+            mysqli_close($conexion);
+            die($mensaje);
+        }
+
+        if (mysqli_num_rows($resultado) > 0) {
+
+            echo "<p></p>";
+
+            echo "<form action='index.php'  method='post'>
+            <label for='asignatura'>Asignaturas que a <strong>" . $nombre . "</strong> aún le quedan por calificar: </label>
+            <select name='asignatura' id='asignatura'>";
+
+            while ($tupla = mysqli_fetch_assoc($resultado)) {
+                if ($_POST["asignatura"] == $tupla["cod_asig"]) {
+                    echo "<option value='" . $tupla["cod_asig"] . "' selected>" . $tupla["denominacion"] . "</option>";
+                } else
+                    echo "<option value='" . $tupla["cod_asig"] . "'>" . $tupla["denominacion"] . "</option>";
+            }
+
+            echo "</select>";
+
+
+            echo " <button type='submit' name='boton_calificar' >Calificar</button>";
+            echo "<input type='hidden' name ='alumno' value= '" . $_POST["alumno"] . "'/>";
+            if (isset($nombre)) {
+                echo "<input type='hidden' name ='nombre' value= '" . $nombre . "'/>";
+            }
+
+            echo "</form>";
+
+            mysqli_free_result($resultado);
+        } else {
+
+            echo "<p>A <strong>" . $nombre . "</strong> no le quedan asignaturas por calificar</p>";
+        }
+    }
+
+
     ?>
+
+
+
 </body>
 
 </html>
