@@ -74,7 +74,7 @@ function error_page($title, $body)
     }
 
     //5. SI HEMOS PULSADO EL BOTÓN AÑADIR:
-    
+
 
     //2. HACEMOS LA CONSULTA
     try {
