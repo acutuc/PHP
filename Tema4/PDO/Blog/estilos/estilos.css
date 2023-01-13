@@ -1,0 +1,13 @@
+.noticia{
+    background:none;
+    border: none;
+    border-bottom:1px solid blue;
+    font-size: 20px;
+    font-weight: bold;
+    color:blue;
+    cursor:pointer;
+}
+
+.error{
+    color:red;
+}
