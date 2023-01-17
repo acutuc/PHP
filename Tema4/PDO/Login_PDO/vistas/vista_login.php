@@ -28,7 +28,7 @@ if (isset($_POST["btnLogin"])) {
                 $_SESSION["usuario"] = $datos[0];
                 $_SESSION["clave"] = $datos[1];
                 $_SESSION["ultimo_acceso"] = time();
-                header("Location:index.php");
+                header("Location:index.php");//Recarga
                 exit();
             } else {
                 $error_usuario = true;

@@ -22,11 +22,21 @@ function error_page($title, $encabezado, $mensaje)
 }
 
 //Si hay sesión (de cualquier campo):
-if(isset($_SESSION["usuario"])){
+if (isset($_SESSION["usuario"])) {
+    //Conectamos a la BD:
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
     } catch (PDOException $e) {
-        die(error_page("Login PDO", "Login con PDO", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
+        die(error_page("Blog Personal", "Blog Personal", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
+    }
+
+    //Hacemos la consulta:
+    try {
+        
+    } catch (PDOException $e) {
+        $sentencia = null; //Libera sentencia
+        $conexion = null; //Cierra conexión
+        die(error_page("Blog Personal", "Blog Personal", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
     }
 }
 
@@ -44,35 +54,35 @@ if (isset($_POST["btnEntrar"])) {
         } catch (PDOException $e) {
             die(error_page("Blog Personal", "Blog Personal", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
         }
-    }
 
-    //... y miramos si existe el usuario: 
-    try {
-        $consulta = "SELECT * FROM usuarios WHERE usuario = ? AND clave = ?";
+        //... y miramos si existe el usuario: 
+        try {
+            $consulta = "SELECT * FROM usuarios WHERE usuario = ? AND clave = ?";
 
-        $sentencia = $conexion->prepare($consulta);
+            $sentencia = $conexion->prepare($consulta);
 
-        $datos[] = $_POST["usuario"];
-        $datos[] = md5($_POST["clave"]);
+            $datos[] = $_POST["usuario"];
+            $datos[] = md5($_POST["clave"]);
 
-        $sentencia->execute($datos);
+            $sentencia->execute($datos);
 
-        //Si se ha logeado, creamos los $_SESSION
-        if ($sentencia->rowCount() > 0) {
-            $_SESSION["usuario"] = $datos[0];
-            $_SESSION["clave"] = $datos[1];
-            $_SESSION["ultimo_acceso"] = time();
+            //Si se ha logeado, creamos los $_SESSION
+            if ($sentencia->rowCount() > 0) {
+                $_SESSION["usuario"] = $datos[0];
+                $_SESSION["clave"] = $datos[1];
+                $_SESSION["ultimo_acceso"] = time();
 
-            header("Location:index.php");
-            exit();
-        } else {
-            //Si no se ha logeado, ponemos a true el $error_usuario:
-            $error_usuario = true;
+                header("Location:index.php");
+                exit();
+            } else {
+                //Si no se ha logeado (ha expirado el tiempo de sesion), ponemos a true el $error_usuario:
+                $error_usuario = true;
+            }
+        } catch (PDOException $e) {
+            $sentencia = null;
+            $conexion = null;
+            die(error_page("Blog Personal", "Blog Personal", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
         }
-    } catch (PDOException $e) {
-        $sentencia = null;
-        $conexion = null;
-        die(error_page("Blog Personal", "Blog Personal", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
     }
 }
 ?>
@@ -95,7 +105,7 @@ if (isset($_POST["btnEntrar"])) {
             <label for="usuario">Nombre de usuario: </label>
             <input type="text" id="usuario" name="usuario" value="<?php if (isset($_POST["usuario"]))
                 echo $_POST["usuario"] ?>">
-            <?php
+                <?php
             if (isset($_POST["btnEntrar"]) && $error_usuario) {
                 if ($_POST["usuario"] == "") {
                     echo "<span class='error'>*Campo vacío*</span>";

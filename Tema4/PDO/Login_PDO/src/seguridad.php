@@ -26,7 +26,7 @@ try {
 
         $_SESSION["seguridad"] = "El usuario ya no se encuentra registrado en la BD";
         //y saltamos a index:
-        header("Location:index.php");
+        header("Location:index.php");//Recarga
         exit;
     }
 } catch (PDOException $e) {
@@ -40,11 +40,11 @@ if (time() - $_SESSION["ultimo_acceso"] > 60 * MINUTOS) {
     //Eliminamos todas las variables de session creadas hasta ahora($_SESSION["usuario"], ["clave"], ["ultimo_acceso"])
     session_unset();
 
-    $_SESSION["seguridad"] = "Su tiempo de sesión ha caducado";
+    $_SESSION["seguridad"] = "Su tiempo de sesión ha caducado";//Sesión expirada
     //y saltamos a index:
-    header("Location:index.php");
+    header("Location:index.php");//Recarga
     exit;
 }
 //Refrescamos el tiempo de acceso:
-$_SESSION["ultimo_acceso"] = time();
+$_SESSION["ultimo_acceso"] = time(); //Actualiza el último acceso
 ?>
