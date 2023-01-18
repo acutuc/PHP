@@ -21,6 +21,26 @@ function error_page($title, $encabezado, $mensaje)
     </html>';
 }
 
+function ejecutar_consulta(string $consulta, ?array $array = [])
+{
+    $sentencia = false;
+
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD);
+
+        if (count($array) > 0) {
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute($array);
+        } else {
+            $sentencia = $conexion->query($consulta);
+        }
+    } catch (PDOException $e) {
+        error_page("Blog Personal", "Blog Personal", "Imposible conectar. Error: ".$e->getMessage());
+    }
+
+    return $sentencia;
+}
+
 //Si hay sesión (de cualquier campo):
 if (isset($_SESSION["usuario"])) {
     //Conectamos a la BD:
@@ -32,7 +52,7 @@ if (isset($_SESSION["usuario"])) {
 
     //Hacemos la consulta:
     try {
-        
+
     } catch (PDOException $e) {
         $sentencia = null; //Libera sentencia
         $conexion = null; //Cierra conexión
@@ -40,6 +60,7 @@ if (isset($_SESSION["usuario"])) {
     }
 }
 
+//Si pulsamos el botón ENTRAR:
 if (isset($_POST["btnEntrar"])) {
     $error_usuario = $_POST["usuario"] == "";
     $error_clave = $_POST["clave"] == "";
@@ -84,6 +105,45 @@ if (isset($_POST["btnEntrar"])) {
             die(error_page("Blog Personal", "Blog Personal", "<p>Imposible conectar. Error: " . $e->getMessage() . "</p></body></html>"));
         }
     }
+}
+
+//Si pulsamos en una NOTICIA:
+if (isset($_POST["btnNoticia"]) && isset($_SESSION["usuario"])) {
+    //Conectamos:
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        die(error_page("Blog Personal", "Blog Personal", "Imposible conectar. Error: " . $e->getMessage()));
+    }
+
+    //Hacemos consulta:
+    try {
+        unset($datos);
+        $consulta = "SELECT * FROM noticias WHERE idNoticia = ?";
+
+        //Preparamos la sentencia:
+        $sentencia = $conexion->prepare($consulta);
+
+        //Metemos los datos en un array:
+        $datos[] = $_POST["btnNoticia"];
+
+        //Ejecutamos la sentencia:
+        $sentencia->execute($datos);
+
+        //Almacenamos los datos en $respuesta:
+        $respuesta = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+        //Hacemos el recorrido del array asociativo $respuesta:
+        foreach ($respuesta as $tupla){
+            echo "<h3>".$tupla["titulo"]."</h3>";
+        }
+    } catch (PDOException $e) {
+        $sentencia = null;
+        $conexion = null;
+        die(error_page("Blog Personal", "Blog Personal", "Imposible conectar. Error: " . $e->getMessage()));
+    }
+}elseif(isset($_POST["btnNoticia"]) && !isset($_SESSION["usuario"])){
+
 }
 ?>
 <!DOCTYPE html>
@@ -149,7 +209,7 @@ if (isset($_POST["btnEntrar"])) {
             echo "<h2>Noticias</h2>";
 
             foreach ($respuesta as $tupla) {
-                echo "<button type='submit' name='btnNoticia' class='noticia'>" . $tupla["titulo"] . "</button>";
+                echo "<button type='submit' name='btnNoticia' class='noticia' value='".$tupla["idNoticia"]."'>" . $tupla["titulo"] . "</button>";
                 echo "<p>" . $tupla["copete"] . "</p>";
                 echo "<br>";
             }

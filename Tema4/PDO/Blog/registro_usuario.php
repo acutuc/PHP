@@ -1,4 +1,7 @@
 <?php
+session_name("Blog_Curso22_23");
+session_start();
+
 require "src/config_bd.php";
 
 function error_page($title, $encabezado, $mensaje)
@@ -85,6 +88,7 @@ if (isset($_POST["btnContinuar"])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilos/estilos.css">
     <title>Blog Personal</title>
 </head>
 
@@ -94,7 +98,7 @@ if (isset($_POST["btnContinuar"])) {
         <p>
             <label for="nombre"><strong>Nombre: </strong></label><input type="text" id="nombre" name="nombre" value="<?php if (isset($_POST["nombre"]))
                 echo $_POST["nombre"] ?>">
-            <?php
+                <?php
             if (isset($_POST["btnContinuar"]) && $error_nombre) {
                 echo "<span class='error'>*Campo vacío*</span>";
             }
@@ -103,12 +107,10 @@ if (isset($_POST["btnContinuar"])) {
         <p>
             <label for="usuario"><strong>Usuario: </strong></label><input type="text" id="usuario" name="usuario" value="<?php if (isset($_POST["usuario"]))
                 echo $_POST["usuario"] ?>">
-            <?php
+                <?php
             if (isset($_POST["btnContinuar"]) && $error_usuario) {
                 if ($_POST["usuario"] == "") {
                     echo "<span class='error'>*Campo vacío*</span>";
-                } else {
-                    echo "<span class='error'>*El usuario o email ya se encuentra registrado*</span>";
                 }
             }
             ?>
@@ -124,7 +126,7 @@ if (isset($_POST["btnContinuar"])) {
         <p>
             <label for="email"><strong>Email: </strong></label><input type="email" id="email" name="email" value="<?php if (isset($_POST["email"]))
                 echo $_POST["email"] ?>">
-            <?php
+                <?php
             if (isset($_POST["btnContinuar"]) && $error_email) {
                 echo "<span class='error'>*Campo vacío*</span>";
             }
@@ -134,9 +136,18 @@ if (isset($_POST["btnContinuar"])) {
         if (isset($mensaje)) {
             echo "<p>$mensaje</p>";
         }
+
+        if(isset($_POST["btnContinuar"]) && $error_usuario){
+            if($error_usuario != ""){
+                echo "<span class='error'>*El usuario o email ya se encuentra registrado*</span>";
+            }
+        }
         ?>
-        <button type="submit" formaction="index.php">Atrás</button>
-        <button type="submit" name="btnContinuar">Continuar</button>
+        <p>
+            <button type="submit" formaction="index.php">Atrás</button>
+            <button type="submit" name="btnContinuar">Continuar</button>
+        </p>
+
     </form>
 </body>
 
