@@ -27,7 +27,7 @@ try {
         $_SESSION["seguridad"] = "El usuario ya no se encuentra registrado en la BD";
         //y saltamos a index:
         header("Location:index.php");//Recarga
-        exit;
+        exit();
     }
 } catch (PDOException $e) {
     $sentencia = null; //Libera sentencia
@@ -43,7 +43,7 @@ if (time() - $_SESSION["ultimo_acceso"] > 60 * MINUTOS) {
     $_SESSION["seguridad"] = "Su tiempo de sesión ha caducado";//Sesión expirada
     //y saltamos a index:
     header("Location:index.php");//Recarga
-    exit;
+    exit();
 }
 //Refrescamos el tiempo de acceso:
 $_SESSION["ultimo_acceso"] = time(); //Actualiza el último acceso

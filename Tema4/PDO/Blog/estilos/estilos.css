@@ -11,3 +11,11 @@
 .error{
     color:red;
 }
+
+.salir{
+    background:none;
+    border:none;
+    border-bottom:1px solid blue;
+    color:blue;
+    cursor:pointer;
+}

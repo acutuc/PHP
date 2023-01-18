@@ -4,23 +4,6 @@ session_start();
 
 require "src/config_bd.php";
 
-function error_page($title, $encabezado, $mensaje)
-{
-    return '<!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>' . $title . '</title>
-    </head>
-    <body>
-        <h1>' . $encabezado . '</h1>
-        ' . $mensaje . '
-    </body>
-    </html>';
-}
-
 if (isset($_POST["btnContinuar"])) {
     $error_nombre = $_POST["nombre"] == "";
     $error_usuario = $_POST["usuario"] == "";
@@ -53,6 +36,7 @@ if (isset($_POST["btnContinuar"])) {
             //Si existen tuplas, hay duplicado:
             if ($sentencia->rowCount() > 0) {
                 $error_usuario = true;
+                $mensaje = "<span class='error'>*El usuario o email ya se encuentra registrado*</span>";
 
                 //Si no, podemos registrar el usuario, realizando una nueva consulta:
             } else {
@@ -71,7 +55,14 @@ if (isset($_POST["btnContinuar"])) {
                 //Ejecutamos la sentencia:
                 $sentencia->execute($datos);
 
-                $mensaje = "Usuario registrado con éxito";
+                if($sentencia){
+                    $_SESSION["usuario"] = $datos[0];
+                    $_SESSION["clave"] = $datos[1];
+                    $_SESSION["ultimo_acceso"] = time();
+                    $_SESSION["mensaje"] = "El usuario se ha registrado con éxito.";
+                    header("Location:index.php");
+                    exit();
+                }
             }
         } catch (PDOException $e) {
             $conexion = null;
@@ -133,14 +124,9 @@ if (isset($_POST["btnContinuar"])) {
             ?>
         </p>
         <?php
-        if (isset($mensaje)) {
-            echo "<p>$mensaje</p>";
-        }
 
-        if(isset($_POST["btnContinuar"]) && $error_usuario){
-            if($error_usuario != ""){
-                echo "<span class='error'>*El usuario o email ya se encuentra registrado*</span>";
-            }
+        if(isset($mensaje)){
+            echo $mensaje;
         }
         ?>
         <p>
