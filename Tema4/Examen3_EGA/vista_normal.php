@@ -18,7 +18,7 @@
                     <button type="submit" name="btnSalir">Salir</button>
                 </p>
             </form>
-            <h2>Clientes</h2>
+            <h2>Datos del usuario</h2>
             <?php
             if (isset($_SESSION["mensaje_accion"])) {
                 echo $_SESSION["mensaje_accion"];
