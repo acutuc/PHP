@@ -88,7 +88,7 @@ if (!isset($_SESSION["usuario"]) || isset($_POST["btnSalir"])) {
             //Habrá error en claves cuando, o estén vacías, o no sean iguales:
             $error_nueva_clave = $_POST["nuevaClave"] == "" || ($_POST["nuevaClave"] != $_POST["nuevaClave2"]);
             $error_nueva_clave_2 = $_POST["nuevaClave2"] == "" || ($_POST["nuevaClave2"] != $_POST["nuevaClave"]);
-            //$error_foto = $_FILES["foto"]["name"] != "" && ($_FILES["foto"]["error"] || !getimagesize($_FILES["foto"]["tmp_name"] || $_FILES["foto"]["size"] > 50000));
+            //$error_foto = $_FILES["foto"]["name"] != "" && ($_FILES["foto"]["error"] || !getimagesize($_FILES["foto"]["tmp_name"] || $_FILES["foto"]["size"] > 500000));
 
             $error_form = $error_nuevo_usuario || $error_nueva_clave || $error_nueva_clave_2; //|| $error_foto;
 

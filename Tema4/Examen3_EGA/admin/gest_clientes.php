@@ -1,10 +1,14 @@
 <?php
 if (isset($_POST["btnEditar"])) {
     $_SESSION["mensaje_accion"] = "El cliente con id " . $_POST["btnEditar"] . " fue editado con éxito.";
+    header("Location:index.php");
+    exit;
 }
 
 if (isset($_POST["btnBorrar"])) {
     $_SESSION["mensaje_accion"] = "El cliente con id " . $_POST["btnBorrar"] . " fue borrado con éxito.";
+    header("Location:index.php");
+    exit;
 }
 
 if (isset($_POST["btnAgregar"])) {
