@@ -26,6 +26,25 @@ $app->post('/saludo',function($request){
 
 });
 
+// -------- DELETE: ----------//
+
+$app->delete("/borrar_saludo/{id}", function ($request) {
+    echo json_encode(array("mensaje" => "El saludo con ID: " . $request->getAttribute("id") . " ha sido borrado"), JSON_FORCE_OBJECT);
+});
+
+// -------- PUT: ----------//
+
+$app->put("/modificar_saludo/{id}{saludo_nuevo}", function ($request) {
+    echo json_encode(array("mensaje" => "El saludo con ID: " . $request->getAttribute("id") . " ha sido actualizado a: ".$request->getAttribute("saludo_nuevo")), JSON_FORCE_OBJECT);
+});
+
+// -------- PUT CON POST: ----------//
+
+$app->put("/modificar_saludo/{id}", function ($request) {
+    echo json_encode(array("mensaje" => "El saludo con ID: " . $request->getAttribute("id") . " ha sido actualizado a ".$request->getParam("saludo_nuevo")), JSON_FORCE_OBJECT);
+});
+
+
 // Una vez creado servicios los pongo a disposición
 $app->run();
 ?>
