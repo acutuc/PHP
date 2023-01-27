@@ -47,9 +47,9 @@ function consumir_servicios_rest($url, $metodo, $datos = null)
 
     //Listamos:
     echo "<table>";
-    echo "<tr><th>Nombre</th><th>PVP</th></tr>";
+    echo "<tr><th>COD</th><th>Nombre</th><th>PVP</th></tr>";
     foreach ($obj->productos as $tupla) {
-        echo "<tr><td>" . $tupla->nombre_corto . "</td><td>" . $tupla->PVP . "</td></tr>";
+        echo "<tr><td>".$tupla->cod."</td><td>" . $tupla->nombre_corto . "</td><td>" . $tupla->PVP . "</td></tr>";
     }
     echo "</table>";
 
@@ -72,26 +72,72 @@ function consumir_servicios_rest($url, $metodo, $datos = null)
     if (!$obj->producto) {
         echo "<p>El producto solicitado no se encuentra en la base de datos</p>";
     } else {
-        echo "<p><strong>Nombre corto: </strong>" . $obj->producto->nombre_corto . "</p>";
+        echo "<p><strong>Nombre corto: </strong>" . $obj->producto->nombre_corto . "<hr></p>";
     }
 
     //c):
+
+    //Aquí creamos el array asociativo que pasaremos luego por parámetro a la función consumir_servicios_rest():
+    $datos_insert["cod"] = "ERTFRG";
+    $datos_insert["nombre"] = "Plato de porcelana";
+    $datos_insert["nombre_corto"] = "Plato";
+    $datos_insert["descripcion"] = "Sorprende a tu familia con éste maravilloso plato.";
+    $datos_insert["PVP"] = "10.00";
+    $datos_insert["familia"] = "TV";
     
     $url = "http://localhost/PHP/Tema5/Ejercicio1/servicios_rest/producto/insertar";
-    $respuesta = consumir_servicios_rest($url, "PUT");
+    $respuesta = consumir_servicios_rest($url, "POST", $datos_insert);
 
-    ?>
-    <form action="index.php" method="post">
-        <p>
-            <label for="nombre">Nombre corto: </label>
-            <input type="text" id="nombre" name="nombre">
-        </p>
-        <p>
-            <label for="nombre">Nombre corto: </label>
-            <input type="text" id="nombre" name="nombre">
-        </p>
+    $obj = json_decode($respuesta);
+    if (!$obj) {
+        die("<p>Error consumiendo el servicio rest: " . $url . "</p>" . $respuesta . "</body></html>");
+    }
 
-    </form>
+    if (isset($obj->mensaje_error)) {
+        die("<p>" . $obj->mensaje_error . "</p></body></html>");
+    }else{
+        echo "<p>El producto con código: ".$obj->mensaje." ha sido insertado con éxito<hr></p>";
+    }
+
+
+    //d):
+
+    $datos_act["nombre"] = "Paraguas multicolor";
+    $datos_act["nombre_corto"] = "Paraguas";
+    $datos_act["descripcion"] = "Protégete de la lluvia";
+    $datos_act["PVP"] = "50.00";
+    $datos_act["familia"] = "TV";
+    
+    //Pasamos el código en la url
+    $url = "http://localhost/PHP/Tema5/Ejercicio1/servicios_rest/producto/actualizar/ERTFRG";
+    $respuesta = consumir_servicios_rest($url, "PUT", $datos_act);
+
+    $obj = json_decode($respuesta);
+    if (!$obj) {
+        die("<p>Error consumiendo el servicio rest: " . $url . "</p>" . $respuesta . "</body></html>");
+    }
+
+    if (isset($obj->mensaje_error)) {
+        die("<p>" . $obj->mensaje_error . "</p></body></html>");
+    }else{
+        echo "<p>El producto con código: ".$obj->mensaje." ha sido actualizado con éxito<hr></p>";
+    }
+    //e):
+    //Pasamos el código en la url
+    $url = "http://localhost/PHP/Tema5/Ejercicio1/servicios_rest/producto/borrar/ERTFRG";
+    $respuesta = consumir_servicios_rest($url, "POST");
+
+    $obj = json_decode($respuesta);
+    if (!$obj) {
+        die("<p>Error consumiendo el servicio rest: " . $url . "</p>" . $respuesta . "</body></html>");
+    }
+
+    if (isset($obj->mensaje_error)) {
+        die("<p>" . $obj->mensaje_error . "</p></body></html>");
+    }else{
+        echo "<p>El producto con código: ".$obj->mensaje." ha sido actualizado con éxito<hr></p>";
+    }
+    ?>    
 </body>
 
 </html>
