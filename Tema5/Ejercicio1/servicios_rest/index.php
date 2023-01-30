@@ -9,8 +9,6 @@ $app = new \Slim\App;
 //Todos los productos (a):
 
 $app->get('/productos', function () {
-
-    //$datos["cod"]=$request->getParam('cod');
     echo json_encode(obtener_productos());
 
 });
@@ -18,8 +16,7 @@ $app->get('/productos', function () {
 //Info de un producto en concreto (b):
 
 $app->get('/producto/{cod}', function ($request) {
-
-    //$datos["cod"]=$request->getParam('cod');
+    //getAttribute ES PARA CUANDO QUEREMOS RECOGER DATOS POR ARRIBA (POR GET)
     echo json_encode(obtener_producto($request->getAttribute("cod")));
 
 });
@@ -27,6 +24,7 @@ $app->get('/producto/{cod}', function ($request) {
 //Insertar un producto (c):
 
 $app->post('/producto/insertar', function ($request) {
+    //getParam ES PARA CUANDO QUEREMOS RECOGER DATOS POR ABAJO (POR POST)
     $datos[] = $request->getParam("cod");
     $datos[] = $request->getParam("nombre");
     $datos[] = $request->getParam("nombre_corto");
@@ -64,20 +62,24 @@ $app->get('/familias', function () {
 
 });
 
+//Obtener la familia de un producto en concreto:
+$app->get("/familia/{cod}", function ($request) {
+    echo json_encode(obtener_familia($request->getAttribute("cod")));
+});
+
+//
+
 $app->get("/repet_insert/{tabla}/{columna}/{valor}", function ($request) {
     $datos[] = $request->getAttribute("tabla");
     $datos[] = $request->getAttribute("columna");
     $datos[] = $request->getAttribute("valor");
-    echo json_encode(repetido($datos));
+    echo json_encode(repetido($request->getAttribute("tabla"), $request->getAttribute("columna"), $request->getAttribute("valor")));
 });
 
-$app->get("/repet_insert/{tabla}/{columna}/{valor}/{columna_clave}/{valor_clave}", function ($request) {
-    $datos[] = $request->getAttribute("tabla");
-    $datos[] = $request->getAttribute("columna");
-    $datos[] = $request->getAttribute("valor");
-    $datos[] = $request->getAttribute("columna_clave");
-    $datos[] = $request->getAttribute("valor_clave");
-    echo json_encode(repetido($datos));
+//
+
+$app->get("/repet_edit/{tabla}/{columna}/{valor}/{columna_clave}/{valor_clave}", function ($request) {
+    echo json_encode(repetido($request->getAttribute('tabla'), $request->getAttribute('columna'), $request->getAttribute('valor'), $request->getAttribute('columna_clave'), $request->getAttribute('valor_clave')));
 });
 // Una vez creado servicios los pongo a disposición
 $app->run();

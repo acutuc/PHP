@@ -19,6 +19,8 @@ function obtener_productos()
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
@@ -49,6 +51,8 @@ function obtener_producto($cod)
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
@@ -56,7 +60,8 @@ function obtener_producto($cod)
     return $respuesta;
 }
 
-function insertar_producto($datos){
+function insertar_producto($datos)
+{
     //Conectamos a la BD:
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -76,6 +81,8 @@ function insertar_producto($datos){
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
@@ -83,7 +90,8 @@ function insertar_producto($datos){
     return $respuesta;
 }
 
-function actualizar_producto($datos){
+function actualizar_producto($datos)
+{
     //Conectamos a la BD:
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -103,13 +111,16 @@ function actualizar_producto($datos){
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
 
     return $respuesta;
 }
-function borrar_producto($datos){
+function borrar_producto($cod)
+{
     //Conectamos a la BD:
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -122,13 +133,14 @@ function borrar_producto($datos){
             $sentencia = $conexion->prepare($consulta);
 
             //Ejecutamos la sentencia
-            $sentencia->execute([$datos]);
+            $sentencia->execute([$cod]);
 
-            //El código está en la posición 5!!!!!!!!!
-            $respuesta["mensaje"] = $datos;
+            $respuesta["mensaje"] = $cod;
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
@@ -156,6 +168,8 @@ function obtener_familias()
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
@@ -163,7 +177,30 @@ function obtener_familias()
     return $respuesta;
 }
 
-function repetido($datos)
+function obtener_familia($cod)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        try {
+            $consulta = "SELECT * FROM familia WHERE cod=?";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute([$cod]);
+            $respuesta["familia"] = $sentencia->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $respuesta["mensaje_error"] = "Imposible realizar la consulta. Error:" . $e->getMessage();
+        }
+        $sentencia = null;
+        $conexion = null;
+    } catch (PDOException $e) {
+        $respuesta["mensaje_error"] = "Imposible conectar. Error:" . $e->getMessage();
+    }
+
+
+    return $respuesta;
+}
+
+function repetido($tabla, $columna, $valor, $columna_clave = null, $valor_clave = null)
 {
     //Conectamos a la BD:
     try {
@@ -171,12 +208,15 @@ function repetido($datos)
 
         //CONECTAMOS AQUÍ!!!!!!!:
         try {
-            if(isset($datos[3])){
-                $consulta = "SELECT * FROM ? WHERE ? = ? AND ? <> ?";
-            }else{
-                $consulta = "SELECT * FROM ? WHERE ? = ?";
+            if (isset($columna_clave)) {
+                $consulta = "SELECT ".$columna." FROM ".$tabla." WHERE ".$columna." = ? AND ".$columna_clave." <> ?";
+                $datos[] = $valor;
+                $datos[] = $valor_clave;
+            } else {
+                $consulta = "SELECT ".$columna." FROM ".$tabla." WHERE ".$columna." = ?";
+                $datos[] = $valor;
             }
-            
+
 
             //Preparamos la sentencia:
             $sentencia = $conexion->prepare($consulta);
@@ -188,6 +228,8 @@ function repetido($datos)
         } catch (PDOException $e) {
             $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
         }
+        $sentencia = null;
+        $conexion = null;
     } catch (PDOException $e) {
         $respuesta["mensaje_error"] = "Imposible conectar. Error: " . $e->getMessage();
     }
