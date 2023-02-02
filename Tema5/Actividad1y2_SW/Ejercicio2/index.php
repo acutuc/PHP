@@ -140,6 +140,7 @@ if(isset($_POST["btnContEditar"]))
     <title>CRUD - SW</title>
     <style>
         table,th,td{border:1px solid black}
+        th, .colorear {background-color: lightgreen;}
         table{border-collapse:collapse}
         .centrado{text-align:center}
         .centro{width:80%;margin:0 auto}
