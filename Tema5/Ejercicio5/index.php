@@ -54,6 +54,7 @@ if (isset($_SESSION["usuario"])) {
 
     //Si no hay objeto:
     if (!$obj) {
+        session_destroy();
         die(error_page("Login Servicios", "Login Servicios", "<p>Error consumiendo el servicio: " . $url . "</p>" . $respuesta));
     }
     //Si el servicio nos devuelve error:
@@ -215,6 +216,7 @@ if (isset($_SESSION["usuario"])) {
     </head>
 
     <body>
+        <h1>Login SW</h1>
         <form action="index.php" method="post">
             <p>
                 <label for="usuario"><strong>Usuario: </strong></label>
@@ -248,7 +250,7 @@ if (isset($_SESSION["usuario"])) {
         <?php
         if (isset($_SESSION["seguridad"])) {
             echo "<p class='error'>" . $_SESSION["seguridad"] . "</p>";
-            unset($_SESSION["seguridad"]);
+            session_destroy();
         }
         ?>
     </body>
