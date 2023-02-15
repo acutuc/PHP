@@ -16,6 +16,17 @@
         Bienvenido <strong><?php echo $_SESSION["usuario"];?></strong> - <form class="enlinea" method="post" action="index.php"><button class="enlace" name="btnCerrarSesion">Salir</button></form>
     </div>
     <h2>Su horario</h2>
-      
+    <?php
+    $url = "/horario/".$datos_usuario_log->id_usuario;
+    $respuesta = consumir_servicios_REST($url, "POST", $_SESSION["api_session"]);
+    $obj = json_decode($respuesta);
+    if(!$obj){
+        session_destroy();
+        die(error_page("", ""));
+    }
+    echo "<h3>Horario del profesor: ".$datos_usuario_log->nombre."</h3>";
+
+
+    ?>
 </body>
 </html>

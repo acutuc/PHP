@@ -32,7 +32,7 @@ function conexion_mysqli()
     return $respuesta;
 }
 
-function login($datos, $first_time = true)
+function login($datos, $in_log = true)
 {
     try {
         //Intenta conectar:
@@ -51,9 +51,9 @@ function login($datos, $first_time = true)
                 $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
 
                 //Protegemos, comprobamos si existían sesiones o no, con el segundo parámetro pasado a la función:
-                if ($first_time) {
+                if ($in_log) {
                     //Creamos la sesión y guardamos el tipo de usuario en la sesión:
-                    session_name("Examen_21_22");
+                    session_name("Examen_API_21_22");
                     session_start();
                     $_SESSION["usuario"] = $datos[0];
                     $_SESSION["clave"] = $datos[1];
@@ -72,7 +72,33 @@ function login($datos, $first_time = true)
         $sentencia = null;
         $conexion = null;
     } catch (PDOException $e) {
-        $respuesta["error"] = json_encode(array("error"=>"Imposible realizar la consulta. Error: " . $e->getMessage()));
+        $respuesta["error"] = json_encode(array("error" => "Imposible realizar la consulta. Error: " . $e->getMessage()));
+    }
+    return $respuesta;
+}
+
+function obtener_horario($id_usuario)
+{
+    try {
+        //Intenta conectar:
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        //Si conecta:
+        try {
+            //Hacemos la consulta:
+            $consulta = "SELECT horario_lectivo.dia, horario_lectivo.hora, grupos.nombre FROM horario_lectivo, grupos WHERE horario_lectivo.grupo = grupos.id_grupo AND horario_lectivo.usuario = ?";
+            //Preparamos la consulta, y ejecutamos
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute([$id_usuario]);
+            //Almacemnamos los datos del horario en el array $respuesta:
+            $respuesta["horario"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $respuesta["error"] = "Imposible realizar la consulta. Error: " . $e->getMessage();
+        }
+        //Cerramos sentencia y conexion:
+        $sentencia = null;
+        $conexion = null;
+    } catch (PDOException $e) {
+        $respuesta["error"] = json_encode(array("error" => "Imposible realizar la consulta. Error: " . $e->getMessage()));
     }
     return $respuesta;
 }

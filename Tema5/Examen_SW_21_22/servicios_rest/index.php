@@ -28,33 +28,40 @@ $app->post("/logueado", function ($request) {
 
     session_id($request->getParam("api_session"));
     session_start();
-    //Si está logueado:
+    //Si existe $_SESSION, es que está logueado:
     if (isset($_SESSION["tipo"])) {
-        $datos[] = $request->getParam("usuario");
-        $datos[] = $request->getParam("clave");
+        $datos[] = $_SESSION["usuario"];
+        $datos[] = $_SESSION["clave"];
 
-        echo json_encode(login($datos));
+        echo json_encode(login($datos, false));
     } else {
         session_destroy();
-        echo json_encode(array("no_login"=>"No loogueado en la API"));
+        echo json_encode(array("no_login" => "No logueado en la API"));
     }
 
 });
 
-$app->post("/salir",function($request){
+$app->post("/salir", function ($request) {
 
     session_id($request->getParam("api_session"));
     session_start();
     session_destroy();
-    echo json_encode(array("logout"=>"Cerrada API"));
+    echo json_encode(array("logout" => "Cerrada API"));
 
 });
 
+
+//Ejercicio b):
 $app->get("/horario/{id_usuario}", function ($request) {
 
-    $datos[] = $request->getParam("nombre");
-    $datos[] = $request->getParam("usuario");
-    $datos[] = $request->getParam("clave");
+    session_id($request->getParam("api_session"));
+    session_start();
+    if (isset($_SESSION["tipo"])) {
+        echo json_encode(obtener_horario($request->getAttribute("id_usuario")));
+    } else {
+        session_destroy();
+        echo json_encode(array("no_login" => "No logueado en la API"));
+    }
 
 });
 
