@@ -10,7 +10,7 @@ if(isset($_POST["btnCerrarSesion"]))
     exit;
 }
 
-if(isset($_SESSION["usuario"]) && isset($_SESSION["clave"]) && isset($_SESSION["ultimo_acceso"]))
+if(isset($_SESSION["usuario"]) && isset($_SESSION["clave"]) && isset($_SESSION["ultimo_acceso"])&& isset($_SESSION["api_session"]))
 {
     //El usuario se ha logueado al menos una vez correctamente
     //Primero compruebo si se ha baneado
