@@ -12,7 +12,7 @@ function obtener_productos() {
     })
         .done(function (data) {
             if (data.mensaje_error) {
-                $('#respuesta').html(data.mensaje_error);
+                $('#errores').html(data.mensaje_error);
             } else {
                 var html_output = "<table class='centrado'>";
                 html_output += "<tr><th>COD</th><th>Nombre</th><th>PVP</th><th><button class='enlace' onclick='montar_form_crear();'>Producto+</button></th></tr>";
