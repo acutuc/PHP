@@ -1,3 +1,56 @@
+<?php
+//Si pulsamos Entrar en el login inicial:
+if (isset($_POST["btnEntrar"])) {
+    echo "va 3";
+    $error_usuario = $_POST["usuario"] == "";
+    $error_clave = $_POST["clave"] == "";
+
+    $error_formulario = $error_usuario || $error_clave;
+
+    //Si no hay error en formulario, iniciamos sesión:
+    if (!$error_formulario) {
+        //Conectamos a la BD:
+        try {
+            $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        } catch (PDOException $e) {
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: " . $e->getMessage()));
+        }
+        //Consultamos para ver si existe el usuario logueado:
+        try {
+            //Consulta:
+            $consulta = "SELECT * FROM usuarios WHERE usuario = ? AND clave = ?";
+            //Sentencia:
+            $sentencia = $conexion->prepare($consulta);
+            //Datos. Recogemos usuario y clave:
+            $datos[] = $_POST["usuario"];
+            $datos[] = md5($_POST["clave"]);
+            //Ejecutamos la sentencia con los datos:
+            $sentencia->execute($datos);
+
+            //Si hemos obtenido tuplas, nos hemos logueado:
+            if ($sentencia->rowCount() > 0) {
+                //BORRO TODOS LOS $_POST PARA QUE NO ENTRE EN vista_login o vista_registro:
+                unset($_POST); // <----------------------------------------------------------------- REVISAR
+                //Almacenamos en $_SESSION los datos del usuario:
+                $_SESSION["usuario"] = $datos[0];
+                $_SESSION["clave"] = $datos[1];
+                $_SESSION["ultimo_acceso"] = time();
+                //Saltamos al inicio:
+                header("Location:index.php");
+                exit();
+            } else {
+                //Si no, el usuario no existe en la BD o la contraseña está mal escrita:
+                $mensaje_error = "<span class='error'>*Usuario o contraseña incorrectos*</span>";
+                $sentencia = null;
+            }
+        } catch (PDOException $e) {
+            $sentencia = null; //Libera sentencia
+            $conexion = null; //Cierra conexión
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: ".$e->getMessage()));
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -34,11 +87,7 @@
                 echo $_POST["usuario"] ?>">
                 <?php
             if (isset($_POST["btnEntrar"]) && $error_usuario) {
-                if ($_POST["usuario"] == "") {
-                    echo "<span class='error'>*Campo vacío*</span>";
-                } else {
-                    echo "<span class='error'>*El usuario no existe*</span>";
-                }
+                echo "<span class='error'>*Campo vacío*</span>";
             }
             ?>
         </p>
@@ -51,6 +100,9 @@
                 } else {
                     echo "<span class='error>*Contraseña incorrecta*</span>";
                 }
+            }
+            if (isset($mensaje_error)) {
+                echo "<p>" . $mensaje_error . "</p>";
             }
             ?>
         </p>

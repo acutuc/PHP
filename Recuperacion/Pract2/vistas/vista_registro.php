@@ -1,6 +1,6 @@
 <?php
 //Si pulsamos Guardar Cambios, en el formulario de registro:
-if (isset($_POST["bntBorrar"])) {
+if (isset($_POST["btnBorrar"])) {
     unset($_POST);
 }
 

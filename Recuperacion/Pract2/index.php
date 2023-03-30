@@ -1,27 +1,34 @@
 <?php
-//Funciones:
-function bien_escrito($texto)
-{
-    $dni = strtoupper($texto);
-    return strlen($dni) == 9 && is_numeric(substr($dni, 0, 8)) && substr($dni, 8, 1) >= "A" && substr($dni, 8, 1) <= "Z";
-}
+session_name("Practica_Rec_2");
+session_start();
 
-//Si pulsamos Entrar en el login inicial:
-if (isset($_POST["btnEntrar"])) {
-    $error_usuario = $_POST["usuario"] == "";
-    $error_clave = $_POST["clave"] == "";
+require "src/bd_config.php";
 
-    $error_formulario = $error_usuario || $error_clave;
+require "src/funciones.php";
 
-    //Si no hay error en formulario, iniciamos sesión:
-    if (!$error_formulario) {
-
-    }
+//Si hemos pulsado "Salir" como admin o normal, destruimos las sessiones:
+if(isset($_POST["btnSalir"])){
+    session_destroy();
+    header("Location:index.php");
+    exit();
 }
 
 //Si pulsamos Registrarse en el login inicial o Guardar Cambios en el formulario de registro:
 if (isset($_POST["btnRegistrarse"]) || isset($_POST["btnGuardar"]) || isset($_POST["btnBorrar"])) {
     require "vistas/vista_registro.php";
+    
+    //Si existe $_SESSION:
+} else if (isset($_SESSION["usuario"]) && isset($_SESSION["clave"]) && isset($_SESSION["ultimo_acceso"])) {
+    //Hacemos seguridad:
+    require "src/seguridad.php";
+
+    if($datos_usuario_log["tipo"] == "admin"){
+        //Si somos admin:
+        require "vistas/vista_admin.php";
+    }else{
+        //Si somos normal:
+        require "vistas/vista_normal.php";
+    }
 } else {
     require "vistas/vista_login.php";
 }
