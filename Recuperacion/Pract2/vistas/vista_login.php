@@ -1,7 +1,6 @@
 <?php
 //Si pulsamos Entrar en el login inicial:
 if (isset($_POST["btnEntrar"])) {
-    echo "va 3";
     $error_usuario = $_POST["usuario"] == "";
     $error_clave = $_POST["clave"] == "";
 
