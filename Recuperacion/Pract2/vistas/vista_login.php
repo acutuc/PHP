@@ -41,11 +41,12 @@ if (isset($_POST["btnEntrar"])) {
                 //Si no, el usuario no existe en la BD o la contraseña está mal escrita:
                 $mensaje_error = "<span class='error'>*Usuario o contraseña incorrectos*</span>";
                 $sentencia = null;
+                $conexion = null;
             }
         } catch (PDOException $e) {
             $sentencia = null; //Libera sentencia
             $conexion = null; //Cierra conexión
-            die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: ".$e->getMessage()));
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: " . $e->getMessage()));
         }
     }
 }
@@ -110,6 +111,12 @@ if (isset($_POST["btnEntrar"])) {
                 name="btnRegistrarse">Registarse</button>
         </p>
     </form>
+    <?php
+    if (isset($_SESSION["seguridad"])) {
+        echo "<p class='error'>" . $_SESSION["seguridad"] . "</p>";
+        session_destroy();
+    }
+    ?>
 </body>
 
 </html>

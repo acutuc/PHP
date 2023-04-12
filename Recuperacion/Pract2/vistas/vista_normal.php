@@ -21,7 +21,10 @@
     <h1>Práctica Rec 2</h1>
     <form action="index.php" method="post">
         <p>Bienvenido
-            <span class="linea"><?php echo $datos_usuario_log["usuario"] ?></span> - <button type="submit" name="btnSalir" class="linea">Salir</button>
+            <span class="linea">
+                <?php echo $datos_usuario_log["usuario"] ?>
+            </span> -
+        <form method="post" action="index.php"><button type="submit" name="btnSalir" class="linea">Salir</button></form>
         </p>
     </form>
 </body>
