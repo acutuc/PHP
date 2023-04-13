@@ -6,16 +6,109 @@ if (isset($_POST["btnBorrar"])) {
 
 if (isset($_POST["btnGuardar"])) {
     $error_usuario = $_POST["usuario"] == "";
+    //Si hemos escrito algo en el campo usuario:
+    if (!$error_usuario) {
+        //Comprobamos que dicho usuario no exista en la BD. MIRAR LA FUNCIÓN (devolverá true o false)
+        $error_usuario = repetido_reg("usuario", $_POST["usuario"]);
+        //Si hemos obtenido un string, es que no hemos podido comprobar con la BD. Destruimos sesiones.
+        if (is_string($error_usuario)) {
+            session_destroy();
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", $error_usuario));
+        }
+    }
     $error_nombre = $_POST["nombre"] == "";
     $error_clave = $_POST["clave"] == "";
     $error_dni = $_POST["dni"] == "" || !bien_escrito($_POST["dni"]);
-    @$error_imagen = $_FILES["imagen"]["name"] != "" && ($_FILES["imagen"]["error"] || !getimagesize($_FILES["imagen"])["tmp_name"] || $_FILES["imagen"]["size"] > 500000);
+    //Hacemos la misma comprobación que el usuario, que no se repita el DNI.
+    if (!$error_dni) {
+        $error_dni = repetido_reg("dni", strtoupper($_POST["dni"]));
+        if (is_string($error_dni)) {
+            session_destroy();
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", $error_dni));
+        }
+    }
+    $error_imagen = $_FILES["imagen"]["name"] != "" && ($_FILES["imagen"]["error"] || !getimagesize($_FILES["imagen"])["tmp_name"] || $_FILES["imagen"]["size"] > 500000);
 
-    $error_formulario = $error_usuario || $error_nombre || $error_clave || $error_dni || $error_imagen;
+    $error_formulario = $error_usuario || $error_nombre || $error_clave || $error_dni;
 
     //Si no hay error, hacemos el registro del nuevo usuario:
     if (!$error_formulario) {
+        //Conectamos con la BD:
+        try {
+            $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        } catch (PDOException $e) {
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: " . $e->getMessage()));
+        }
+        //Insertamos primero mirando si hay foto en el registro:
+        try {
+            $consulta = "INSERT INTO usuarios(usuario, clave, nombre, dni, sexo, subscripcion) VALUES(?, ?, ?, ?, ?, ?)";
+            $sentencia = $conexion->prepare($consulta);
+            //Comprobamos si el usuario está suscrito o no:
+            $subs = 0;
+            if (isset($_POST["suscripcion"])) {
+                $subs = 1;
+            }
 
+            $datos[] = $_POST["usuario"];
+            $datos[] = md5($_POST["clave"]);
+            $datos[] = $_POST["nombre"];
+            $datos[] = $_POST["dni"];
+            $datos[] = $_POST["sexo"];
+            $datos[] = $subs;
+
+            $sentencia->execute($datos);
+
+        } catch (PDOException $e) {
+            $sentencia = null;
+            $conexion = null;
+            session_destroy();
+            die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: " . $e->getMessage()));
+        }
+        $mensaje = "¡Has sido registrado con éxito!";
+        //Ahora tratamos la imagen.
+        //Si hemos seleccionado una imagen:
+        if ($_FILES["foto"]["name"] != "") {
+            //Cogemos el último id insertado:
+            $ultimo_id = $conexion->lastInsertId();
+            $array_extension = explode(".", $_FILES["foto"]["name"]);
+            $ext = "";
+            //Si tiene formato:
+            if (count($array_extension) > 0) {
+                //Asignamos el formato a la extensión:
+                $ext = "." . end($array_extension);
+            }
+            //Asignamos el nombre completo al archivo (img_5.jpg, por ejemplo):
+            $nombre_nuevo_img = "img_" . $ultimo_id . $ext;
+            //Movemos el archivo:
+            @$var = move_uploaded_file($_FILES["foto"]["tmp_name"], "images/" . $nombre_nuevo_img);
+            //Si hemos podido mover el archivo:
+            if ($var) {
+                //Actualizamos el usuario en la BD:
+                try {
+                    $consulta = "UPDATE usuarios SET foto = ? WHERE id_usuario = ?";
+                    $sentencia = $conexion->prepare($consulta);
+
+                    $datos[] = $nombre_nuevo_img;
+                    $datos[] = $ultimo_id;
+
+                    $sentencia->execute($datos);
+
+                } catch (PDOException $e) {
+                    //Si ha fallado, borramos la imagen:
+                    unlink("images/" . $nombre_nuevo_img);
+                }
+                $sentencia = null;
+            } else {
+                $mensaje = "Has sido registrado con la imagen por defecto.";
+            }
+        }
+        $_SESSION["usuario"] = $datos[0];
+        $_SESSION["clave"] = $datos[1];
+        $_SESSION["ultimo_acceso"] = time();
+        $_SESSION["bienvenida"] = $mensaje;
+        $conexion = null;
+        header("Location:index.php");
+        exit();
     }
 }
 ?>
@@ -83,8 +176,10 @@ if (isset($_POST["btnGuardar"])) {
             if (isset($_POST["btnGuardar"]) && $error_dni) {
                 if ($_POST["dni"] == "") {
                     echo "<span class='error'>*Campo vacío*</span>";
-                } else {
+                } else if (!bien_escrito($_POST["dni"])) {
                     echo "<span class='error'>*Formato no válido*</span>";
+                } else {
+                    echo "<span class='error'>*DNI ya se encuentra registrado*</span>";
                 }
             }
             ?>

@@ -42,6 +42,8 @@ try{
 
 //Controlamos el tiempo de sesión:
 if(time() - $_SESSION["ultimo_acceso"] > MINUTOS * 60){
+    $conexion = null;
+    $sentencia = null;
     session_unset();
     $_SESSION["seguridad"] = "El tiempo de sesión ha expirado";
     header("Location:index.php");

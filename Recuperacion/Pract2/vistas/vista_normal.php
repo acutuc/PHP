@@ -13,6 +13,9 @@
             text-decoration: underline;
             cursor: pointer;
         }
+        .mensaje{
+            color:green;
+        }
     </style>
     <title>Práctica Rec 2</title>
 </head>
@@ -27,6 +30,11 @@
         <form method="post" action="index.php"><button type="submit" name="btnSalir" class="linea">Salir</button></form>
         </p>
     </form>
+    <?php
+    if(isset($_SESSION["bienvenida"])){
+        echo "<p class='mensaje'>".$_SESSION["bienvenida"]."</p>";
+    }
+    ?>
 </body>
 
 </html>
