@@ -29,8 +29,9 @@
             width: 100px;
             height: 100px;
         }
-        .error{
-            color:red;
+
+        .error {
+            color: red;
         }
     </style>
     <title>Práctica Rec 2</title>
@@ -55,18 +56,18 @@
         $error_sexo = !isset($_POST["sexo"]);
 
         $error_formulario = $error_nombre || $error_usuario || $error_clave || $error_dni || $error_sexo;
-        
+
         //Si no hay error en el formulario, hacemos registro:
-        if(!$error_formulario){
+        if (!$error_formulario) {
             //Conectamos a la BD:
-            try{
+            try {
                 $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
-            }catch(PDOException $e){
-                die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: ".$e->getMessage()));
+            } catch (PDOException $e) {
+                die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: " . $e->getMessage()));
             }
 
             //Consultamos en la BD si hay algun usuario con el mismo nombre usuario o dni
-            try{
+            try {
                 //Consultamos
                 $consulta = "SELECT * FROM usuarios WHERE usuario = ? OR dni = ?";
                 //Preparamos la sentencia:
@@ -78,12 +79,12 @@
                 $sentencia->execute($datos);
 
                 //Si hemos obtenido tuplas, es que el usuario o el dni existían, por lo que no podemos hacer la inserción:
-                if($sentencia->rowCount() > 0){
+                if ($sentencia->rowCount() > 0) {
                     $error_usuario = true;
                     $mensaje = "Usuario o DNI ya se encuentra registrado en la base de datos.";
                 }
-            }catch(PDOException $e){
-                die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: ".$e->getMessage()));
+            } catch (PDOException $e) {
+                die(error_page("Práctica Rec 2", "Práctica Rec 2", "Imposible conectar. Error: " . $e->getMessage()));
             }
         }
     }
@@ -96,74 +97,74 @@
                 <label for="nombre">Nombre: </label><br>
                 <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST["nombre"]))
                     echo $_POST["nombre"] ?>" placeholder="Nombre...">
-                    <?php 
-                    if(isset($_POST["btnConfirmarAgregar"]) && $error_nombre){
-                        echo "<span class='error'>*Campo vacío*</span>";
-                    }
-                   ?>
-                </p>
-                <p>
-                    <label for="usuario">Usuario: </label><br>
-                    <input type="text" name="usuario" id="usuario" value="<?php if (isset($_POST["usuario"]))
+                <?php
+                if (isset($_POST["btnConfirmarAgregar"]) && $error_nombre) {
+                    echo "<span class='error'>*Campo vacío*</span>";
+                }
+                ?>
+            </p>
+            <p>
+                <label for="usuario">Usuario: </label><br>
+                <input type="text" name="usuario" id="usuario" value="<?php if (isset($_POST["usuario"]))
                     echo $_POST["usuario"] ?>" placeholder="Usuario...">
                     <?php
-                    if(isset($_POST["btnConfirmarAgregar"]) && $error_usuario){
-                        if($_POST["usuario"] == ""){
-                            echo "<span class='error'>*Campo vacío*</span>";
-                        }else{
-                            echo "<span class='error'>*Usuario o DNI ya registrado*</span>";
-                        }                        
-                    }
-                    ?>
-                </p>
-                <p>
-                    <label for="clave">Contraseña: </label><br>
-                    <input type="password" name="clave" id="clave" placeholder="Contraseña...">
-                    <?php
-                    if(isset($_POST["btnConfirmarAgregar"]) && $error_clave){
+                if (isset($_POST["btnConfirmarAgregar"]) && $error_usuario) {
+                    if ($_POST["usuario"] == "") {
                         echo "<span class='error'>*Campo vacío*</span>";
+                    } else {
+                        echo "<span class='error'>*Usuario o DNI ya registrado*</span>";
                     }
-                    ?>
-                </p>
-                <p>
-                    <label for="dni">DNI: </label><br>
-                    <input type="text" name="dni" id="dni" value="<?php if (isset($_POST["dni"]))
+                }
+                ?>
+            </p>
+            <p>
+                <label for="clave">Contraseña: </label><br>
+                <input type="password" name="clave" id="clave" placeholder="Contraseña...">
+                <?php
+                if (isset($_POST["btnConfirmarAgregar"]) && $error_clave) {
+                    echo "<span class='error'>*Campo vacío*</span>";
+                }
+                ?>
+            </p>
+            <p>
+                <label for="dni">DNI: </label><br>
+                <input type="text" name="dni" id="dni" value="<?php if (isset($_POST["dni"]))
                     echo $_POST["dni"] ?>" placeholder="DNI: 11223344Z">
                     <?php
-                    if(isset($_POST["btnConfirmarAgregar"]) && $error_dni){
-                        if($_POST["dni"] == ""){
-                            echo "<span class='error'>*Campo vacío*</span>";
-                        }else{
-                            echo "<span class='error'>*Formato inválido*</span>";
-                        }
+                if (isset($_POST["btnConfirmarAgregar"]) && $error_dni) {
+                    if ($_POST["dni"] == "") {
+                        echo "<span class='error'>*Campo vacío*</span>";
+                    } else {
+                        echo "<span class='error'>*Formato inválido*</span>";
                     }
-                    ?>
-                </p>
-                <p>
-                    Sexo <br>
-                    <input type="radio" name="sexo" value="hombre" id="hombre" <?php if (isset($_POST["sexo"]) && $_POST["sexo"] == "hombre")
+                }
+                ?>
+            </p>
+            <p>
+                Sexo <br>
+                <input type="radio" name="sexo" value="hombre" id="hombre" <?php if (isset($_POST["sexo"]) && $_POST["sexo"] == "hombre")
                     echo "checked" ?>> <label for="hombre">Hombre</label><br>
                     <input type="radio" name="sexo" value="mujer" id="mujer" <?php if (isset($_POST["sexo"]) && $_POST["sexo"] == "mujer")
                     echo "checked" ?>> <label for="mujer">Mujer</label>
                     <?php
-                    if(isset($_POST["btnConfirmarAgregar"]) && $error_sexo){
-                        echo "<br><span class='error'>*Debe seleccionar un sexo*</span>";
-                    }
-                    ?>
-                </p>
-                <p>
-                    <label for="foto">Incluir mi foto (Máx. 500KB)</label> <input type="file" accept="image/*" name="foto"
-                        id="foto">
-                </p>
-                <p>
-                    <input type="checkbox" name="suscripcion" id="suscripcion"> <label for="suscripcion">Suscribirme al boletín
-                        de novedades</label>
-                </p>
-                <p>
-                    <button type="submit" name="btnConfirmarAgregar">Guardar Cambios</button> <button type="submit"
-                        name="atras">Atrás</button>
-                </p>
-            </form>
+                if (isset($_POST["btnConfirmarAgregar"]) && $error_sexo) {
+                    echo "<br><span class='error'>*Debe seleccionar un sexo*</span>";
+                }
+                ?>
+            </p>
+            <p>
+                <label for="foto">Incluir mi foto (Máx. 500KB)</label> <input type="file" accept="image/*" name="foto"
+                    id="foto">
+            </p>
+            <p>
+                <input type="checkbox" name="suscripcion" id="suscripcion"> <label for="suscripcion">Suscribirme al boletín
+                    de novedades</label>
+            </p>
+            <p>
+                <button type="submit" name="btnConfirmarAgregar">Guardar Cambios</button> <button type="submit"
+                    name="atras">Atrás</button>
+            </p>
+        </form>
         <?php
     }
 
