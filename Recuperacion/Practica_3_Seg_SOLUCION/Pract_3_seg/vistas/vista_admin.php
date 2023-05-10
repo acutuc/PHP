@@ -11,6 +11,7 @@ if(isset($_POST["btnContBorrarFoto"]))
      
     $url=DIR_SERV."/cambiar_foto/".$_POST["id_usuario"];
     $datos_update["foto"]="no_imagen.jpg";
+    $datos_update["api_session"]=$_SESSION["api_session"]["api_session"];
     $respuesta=consumir_servicios_REST($url,"PUT",$datos_update);
     $obj=json_decode($respuesta);
     if(!$obj)
@@ -23,7 +24,13 @@ if(isset($_POST["btnContBorrarFoto"]))
         session_destroy();
         die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
     } 
-
+    if(isset($obj->no_login))
+    {
+        session_unset();
+        $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+        header("Location:index.php");
+        exit;
+    }
     unlink("Img/".$_POST["foto_bd"]);
     $_SESSION["borrarFoto"]=$_POST["id_usuario"];
     header("Location:index.php");
@@ -39,7 +46,7 @@ if(isset($_POST["btnContEditar"]))
     {
         
         $url=DIR_SERV."/repetido_edit/usuario/".urlencode($_POST["usuario"])."/id_usuario/".urlencode($_POST["id_usuario"]);
-        $respuesta=consumir_servicios_REST($url,"GET");
+        $respuesta=consumir_servicios_REST($url,"GET",$_SESSION["api_session"]);
         $obj=json_decode($respuesta);
         if(!$obj)
         {
@@ -51,6 +58,13 @@ if(isset($_POST["btnContEditar"]))
             session_destroy();
             die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
         } 
+        if(isset($obj->no_login))
+        {
+            session_unset();
+            $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+            header("Location:index.php");
+            exit;
+        }
         $error_usuario=$obj->repetido;
        
     }
@@ -60,7 +74,7 @@ if(isset($_POST["btnContEditar"]))
     { 
 
         $url=DIR_SERV."/repetido_edit/dni/".strtoupper($_POST["dni"])."/id_usuario/".urlencode($_POST["id_usuario"]);
-        $respuesta=consumir_servicios_REST($url,"GET");
+        $respuesta=consumir_servicios_REST($url,"GET",$_SESSION["api_session"]);
         $obj=json_decode($respuesta);
         if(!$obj)
         {
@@ -72,6 +86,13 @@ if(isset($_POST["btnContEditar"]))
             session_destroy();
             die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
         } 
+        if(isset($obj->no_login))
+        {
+            session_unset();
+            $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+            header("Location:index.php");
+            exit;
+        }
         $error_dni=$obj->repetido;
 
     }
@@ -95,7 +116,8 @@ if(isset($_POST["btnContEditar"]))
         else
             $datos["clave"]=md5($_POST["clave"]);
 
-        
+        $datos["api_session"]=$_SESSION["api_session"]["api_session"];
+                
         $url=DIR_SERV."/modificar_usuario/".$_POST["id_usuario"];
         $respuesta=consumir_servicios_REST($url,"PUT",$datos);
         $obj=json_decode($respuesta);
@@ -109,7 +131,13 @@ if(isset($_POST["btnContEditar"]))
             session_destroy();
             die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
         }   
-            
+        if(isset($obj->no_login))
+        {
+            session_unset();
+            $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+            header("Location:index.php");
+            exit;
+        }
        
   ///////////////////////////////      
         $mensaje="El usuario ha sido editado con éxito";
@@ -134,6 +162,7 @@ if(isset($_POST["btnContEditar"]))
                     
                     $url=DIR_SERV."/cambiar_foto/".$_POST["id_usuario"];
                     $datos_update["foto"]=$nombre_nuevo_img;
+                    $datos_update["api_session"]=$_SESSION["api_session"]["api_session"];
                     $respuesta=consumir_servicios_REST($url,"PUT",$datos_update);
                     $obj=json_decode($respuesta);
                     if(!$obj)
@@ -148,7 +177,14 @@ if(isset($_POST["btnContEditar"]))
                         session_destroy();
                         die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
                     } 
-
+                    if(isset($obj->no_login))
+                    {
+                        unlink("Img/".$nombre_nuevo_img);
+                        session_unset();
+                        $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+                        header("Location:index.php");
+                        exit;
+                    }
                     
                     if($_POST["foto_bd"]!="no_imagen.jpg")
                             unlink("Img/".$_POST["foto_bd"]);
@@ -179,7 +215,7 @@ if(isset($_POST["btnContNuevo"]))
     {
         
         $url=DIR_SERV."/repetido_reg/usuario/".urlencode($_POST["usuario"]);
-        $respuesta=consumir_servicios_REST($url,"GET");
+        $respuesta=consumir_servicios_REST($url,"GET",$_SESSION["api_session"]);
         $obj=json_decode($respuesta);
         if(!$obj)
         {
@@ -190,7 +226,14 @@ if(isset($_POST["btnContNuevo"]))
         {
             session_destroy();
             die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
-        } 
+        }
+        if(isset($obj->no_login))
+        {
+            session_unset();
+            $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+            header("Location:index.php");
+            exit;
+        }
         $error_usuario=$obj->repetido;
        
     }
@@ -201,7 +244,7 @@ if(isset($_POST["btnContNuevo"]))
     { 
 
         $url=DIR_SERV."/repetido_reg/dni/".strtoupper($_POST["dni"]);
-        $respuesta=consumir_servicios_REST($url,"GET");
+        $respuesta=consumir_servicios_REST($url,"GET",$_SESSION["api_session"]);
         $obj=json_decode($respuesta);
         if(!$obj)
         {
@@ -212,7 +255,14 @@ if(isset($_POST["btnContNuevo"]))
         {
             session_destroy();
             die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
-        } 
+        }
+        if(isset($obj->no_login))
+        {
+            session_unset();
+            $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+            header("Location:index.php");
+            exit;
+        }
         $error_dni=$obj->repetido;
 
     }
@@ -232,6 +282,7 @@ if(isset($_POST["btnContNuevo"]))
         $datos["dni"]=strtoupper($_POST["dni"]);
         $datos["sexo"]=$_POST["sexo"];
         $datos["subs"]=$subs;
+        $datos["api_session"]=$_SESSION["api_session"]["api_session"];
 
         $url=DIR_SERV."/insertar_usuario";
         $respuesta=consumir_servicios_REST($url,"POST",$datos);
@@ -246,7 +297,13 @@ if(isset($_POST["btnContNuevo"]))
             session_destroy();
             die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
         } 
-
+        if(isset($obj->no_login))
+        {
+            session_unset();
+            $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+            header("Location:index.php");
+            exit;
+        }
         $mensaje="El usuario ha sido registrado con éxito";
         if($_FILES["foto"]["name"]!="")
         {
@@ -263,6 +320,7 @@ if(isset($_POST["btnContNuevo"]))
                 
                 $url=DIR_SERV."/cambiar_foto/".$ultm_id;
                 $datos_update["foto"]=$nombre_nuevo_img;
+                $datos_update["api_session"]=$_SESSION["api_session"]["api_session"];
                 $respuesta=consumir_servicios_REST($url,"PUT",$datos_update);
                 $obj=json_decode($respuesta);
                 if(!$obj)
@@ -275,6 +333,14 @@ if(isset($_POST["btnContNuevo"]))
                 {
                     unlink("Img/".$nombre_nuevo_img);
                     $mensaje="El usuario ha sido registrado con éxito con la imagen por defecto, por un problema con la BD";
+                }
+                if(isset($obj->no_login))
+                {
+                    unlink("Img/".$nombre_nuevo_img);
+                    session_unset();
+                    $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+                    header("Location:index.php");
+                    exit;
                 } 
                
             }
@@ -296,7 +362,7 @@ if(isset($_POST["btnContBorrar"]))
 {
     
     $url=DIR_SERV."/borrar_usuario/".$_POST["btnContBorrar"];
-    $respuesta=consumir_servicios_REST($url,"DELETE");
+    $respuesta=consumir_servicios_REST($url,"DELETE",$_SESSION["api_session"]);
     $obj=json_decode($respuesta);
     if(!$obj)
     {
@@ -308,6 +374,13 @@ if(isset($_POST["btnContBorrar"]))
         session_destroy();
         die(error_page("Práctica 3 - SW","Práctica 3 - SW",$obj->mensaje_error));
     } 
+    if(isset($obj->no_login))
+    {
+        session_unset();
+        $_SESSION["seguridad"]="El tiempo de sesión de la API ha expirado";
+        header("Location:index.php");
+        exit;
+    }
     
     if($_POST["foto"]!="no_imagen.jpg")
         unlink("Img/".$_POST["foto"]);

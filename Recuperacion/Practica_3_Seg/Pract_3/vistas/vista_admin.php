@@ -267,7 +267,6 @@ if(isset($_POST["btnContNuevo"]))
                 $obj=json_decode($respuesta);
                 if(!$obj)
                 {
-                    unlink("Img/".$nombre_nuevo_img);
                     session_destroy();
                     die(error_page("Práctica 3 - SW","Práctica 3 - SW","Error consumiendo el servicio: ".$url));
                 }
