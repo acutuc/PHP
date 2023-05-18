@@ -44,6 +44,19 @@ $app->post('/login',function($request){
 
 });
 
+$app->get('/comentarios', function($request){
+
+    session_id($request->getParam("api_session"));
+    session_start();
+    if(isset($_SESSION["tipo"])){
+        echo json_encode(obtener_comentarios());
+    }else{
+        session_destroy();
+        echo json_encode(array("no_login"=>"No logueado en la API"));
+    }
+
+});
+
 
 
 // Una vez creado servicios los pongo a disposición
