@@ -58,6 +58,29 @@ function obtener_productos()
     return $respuesta;
 }
 
+function insertar_producto($datos)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        try {
+            $consulta = "INSERT INTO productos(fecha_recepcion, nombre_producto, cantidad, unidad_medida, precio_unitario, consumido, id_almacen) VALUES(?, ?, ?, ?, ?, 0, 1)";
+
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute($datos);
+
+            $respuesta["ultimo_id"] = $conexion->lastInsertId();
+
+            $sentencia = null;
+            $conexion = null;
+        } catch (PDOException $e) {
+            $respuesta["mensaje_error"] = "Imposible realizar la consulta. Error:" . $e->getMessage();
+        }
+    } catch (PDOException $e) {
+        $respuesta["mensaje_error"] = "Imposible conectar a la BD. Error:" . $e->getMessage();
+    }
+    return $respuesta;
+}
+
 function obtener_usuario($id)
 {
     try {
