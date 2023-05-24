@@ -71,7 +71,9 @@ function obtener_comentarios()
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
         try {
-            $consulta = "SELECT comentarios.idComentario, comentarios.comentario, comentarios.idUsuario, comentarios.idNoticia, comentarios.estado, comentarios.fechaCreacion, usuarios.usuario, noticias.titulo FROM comentarios, noticias, usuarios WHERE comentarios.idUsuario = usuarios.idusuario AND comentarios.idNoticia = noticias.idNoticias";
+            $consulta = "SELECT comentarios.*, usuarios.usuario, noticias.titulo 
+                        FROM comentarios, noticias, usuarios 
+                        WHERE comentarios.idUsuario = usuarios.idusuario AND comentarios.idNoticia = noticias.idNoticia";
             $sentencia = $conexion->prepare($consulta);
             $sentencia->execute();
 
