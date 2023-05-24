@@ -88,10 +88,16 @@ if(isset($_POST["btnContAprobar"]))
     </div>
 
     <?php
-        if(isset($_POST["btnVerNoticia"]))
+        if(isset($_POST["btnVerNoticia"]) || isset($_POST["idNoticia"]))
         {
+            
             //vista ver Noticia
-            $id_noticia=$_POST["btnVerNoticia"];
+            if(isset($_POST["btnVernoticia"])){
+                $id_noticia=$_POST["btnVerNoticia"];
+            }else{
+                $id_noticia = $_POST["idNoticia"];
+            }
+            
 
             $url=DIR_SERV."/noticia/".$id_noticia;
             $respuesta=consumir_servicios_REST($url,"GET",$_SESSION["api_session"]);
@@ -149,13 +155,26 @@ if(isset($_POST["btnContAprobar"]))
                     die("<p>El tiempo de sesión de la API ha expirado. Vuelva a <a href='index.php'>loguearse</a>.</p></body></html>");
                     
                 }
+
+                if(isset($_POST["btnEnviarComentario"])){
+                    $error_comentario = $_POST["nuevoComentario"] == "";
+                }
+                
                 foreach($obj->comentarios as $tupla)
                 {
                     echo "<p><strong>".$tupla->usuario."</strong> dijo:<br/>".$tupla->comentario."</p>"; 
                 }
 
                 //Aquí iría el formulario para insertar el comentario
-
+                echo "<p>Dejar un comentario:</p>";
+                echo "<form method='post' action='gest_comentarios.php'>";
+                echo "<textarea name='nuevoComentario' cols='50' rows='5'></textarea><br/>";
+                echo "<input type='hidden' name='idNoticia' value='".$_POST["btnVerNoticia"]."'/>";
+                echo "<button>Volver</button> <button name='btnEnviarComentario'>Enviar</button>";
+                echo "</form>";
+                if(isset($error_comentario)){
+                    echo "<p>NO HAY COMENTARIO</p>";
+                }
             }
 
 
