@@ -35,7 +35,7 @@ function obtener_productos()
         $conexion = $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
 
         try {
-            $consulta = "SELECT * FROM Productos";
+            $consulta = "SELECT * FROM productos";
 
             $sentencia = $conexion->prepare($consulta);
             $sentencia->execute();
