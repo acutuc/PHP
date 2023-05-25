@@ -171,11 +171,15 @@ $app->post('/insertarComentario/{id_noticia}', function ($request) {
 
     session_id($request->getParam('api_session'));
     session_start();
-    if (isset($_SESSION["tipo"]) && $_SESSION["tipo"] == "admin") {
+    if (isset($_SESSION["tipo"])) {
         $datos[] = $request->getParam("comentario");
         $datos[] = $request->getParam("idUsuario");
         $datos[] = $request->getAttribute("id_noticia");
-        $datos[] = $request->getParam("estado");
+        if ($_SESSION["tipo"] == "admin") {
+            $datos[] = "apto";
+        } else {
+            $datos[] = "sin validar";
+        }
         echo json_encode(insertar_comentario($datos));
     } else {
         session_destroy();
