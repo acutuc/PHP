@@ -187,7 +187,7 @@ function obtener_comentarios_noticia($id)
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
         try
         {
-            $consulta="select comentarios.*, usuarios.usuario from comentarios, usuarios where comentarios.idUsuario=usuarios.idusuario and idNoticia=?";
+            $consulta="select comentarios.*, usuarios.usuario from comentarios, usuarios where comentarios.idUsuario=usuarios.idusuario and idNoticia=? ORDER BY comentarios.fCreacion";
             $sentencia=$conexion->prepare($consulta);
             $sentencia->execute([$id]);
 
@@ -430,7 +430,7 @@ function insertar_comentario($datos)
         $conexion=new PDO("mysql:host=".SERVIDOR_BD.";dbname=".NOMBRE_BD,USUARIO_BD,CLAVE_BD,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'")); 
         try
         {
-            $consulta="insert into comentarios (comentario, idUsuario, idNoticia) values(?,?,?)";
+            $consulta="insert into comentarios (comentario, idUsuario, idNoticia, estado) values(?,?,?,?)";
             $sentencia=$conexion->prepare($consulta);
             $sentencia->execute($datos);
 

@@ -63,6 +63,7 @@ if (isset($_POST["btnCrearComentario"])) {
         $url = DIR_SERV . "/insertarComentario/" . $_POST["btnCrearComentario"];
         $datos_env["comentario"] = $_POST["comentario"];
         $datos_env["idUsuario"] = $datos_usu_log->idusuario;
+        $datos_env["estado"] = "apto";
         $datos_env["api_session"] = $_SESSION["api_session"]["api_session"];
         $respuesta = consumir_servicios_REST($url, "POST", $datos_env);
         $obj = json_decode($respuesta);

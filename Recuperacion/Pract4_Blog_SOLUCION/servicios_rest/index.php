@@ -225,6 +225,7 @@ $app->post('/insertarComentario/{id_noticia}',function($request){
         $datos[]=$request->getParam("comentario");
         $datos[]=$request->getParam("idUsuario");
         $datos[]=$request->getAttribute("id_noticia");
+        $datos[]=$request->getParam("estado");
         echo json_encode(insertar_comentario($datos));
     }
     else
