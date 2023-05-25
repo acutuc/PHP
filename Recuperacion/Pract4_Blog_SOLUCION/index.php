@@ -5,13 +5,12 @@ session_start();
 require "src/funciones_ctes.php";
 
 
-if(isset($_SESSION["usuario"]))
-{
+if (isset($_SESSION["usuario"])) {
     header("Location:principal.php");
     exit();
-}
-else
-{
+} elseif (isset($_POST["btnRegistro"]) || isset($_POST["btnContinuarRegistro"])) {
+    require "vistas/vista_registro.php";
+} else {
     require "vistas/vista_login.php";
 }
 

@@ -75,7 +75,7 @@ if(isset($_POST["btnLogin"]))
                 echo "<span class='error'>Campo Vacío</span>";
             ?>
         </p>
-        <p><button name="btnLogin">Entrar</button></p>
+        <p><button name="btnLogin">Entrar</button> <button name="btnContinuarRegistro">Registro</button></p>
     </form>
     <?php
     if(isset($_SESSION["seguridad"]))

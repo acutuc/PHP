@@ -4,10 +4,12 @@ if (isset($_POST["btnContBorrar"])) {
     $respuesta = consumir_servicios_REST($url, "DELETE", $_SESSION["api_session"]);
     $obj = json_decode($respuesta);
     if (!$obj) {
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
         session_destroy();
         die(error_page("Blog - Exam", "Blog - Exam", "Error consumiendo el servicio: " . $url));
     }
     if (isset($obj->mensaje_error)) {
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
         session_destroy();
         die(error_page("Blog - Exam", "Blog - Exam", $obj->mensaje_error));
     }
@@ -32,10 +34,12 @@ if (isset($_POST["btnContAprobar"])) {
     $respuesta = consumir_servicios_REST($url, "PUT", $datos_act);
     $obj = json_decode($respuesta);
     if (!$obj) {
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
         session_destroy();
         die(error_page("Blog - Exam", "Blog - Exam", "Error consumiendo el servicio: " . $url));
     }
     if (isset($obj->mensaje_error)) {
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
         session_destroy();
         die(error_page("Blog - Exam", "Blog - Exam", $obj->mensaje_error));
     }
@@ -68,10 +72,12 @@ if (isset($_POST["btnCrearComentario"])) {
         $respuesta = consumir_servicios_REST($url, "POST", $datos_env);
         $obj = json_decode($respuesta);
         if (!$obj) {
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
             session_destroy();
             die("<p>Error consumiendo el servicio: " . $url . "</p></body></html>");
         }
         if (isset($obj->mensaje_error)) {
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
             session_destroy();
             die("<p>" . $obj->mensaje_error . "</p></body></html>");
         }
@@ -156,10 +162,12 @@ if (isset($_POST["btnCrearComentario"])) {
         $respuesta = consumir_servicios_REST($url, "GET", $_SESSION["api_session"]);
         $obj = json_decode($respuesta);
         if (!$obj) {
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
             session_destroy();
             die("<p>Error consumiendo el servicio: " . $url . "</p></body></html>");
         }
         if (isset($obj->mensaje_error)) {
+            consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
             session_destroy();
             die("<p>" . $obj->mensaje_error . "</p></body></html>");
         }
@@ -186,10 +194,12 @@ if (isset($_POST["btnCrearComentario"])) {
             $respuesta = consumir_servicios_REST($url, "GET", $_SESSION["api_session"]);
             $obj = json_decode($respuesta);
             if (!$obj) {
+                consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
                 session_destroy();
                 die("<p>Error consumiendo el servicio: " . $url . "</p></body></html>");
             }
             if (isset($obj->mensaje_error)) {
+                consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
                 session_destroy();
                 die("<p>" . $obj->mensaje_error . "</p></body></html>");
             }

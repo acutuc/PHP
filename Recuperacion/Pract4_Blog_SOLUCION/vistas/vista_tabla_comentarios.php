@@ -4,11 +4,13 @@
     $obj=json_decode($respuesta);
     if(!$obj)
     {
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
         session_destroy();
         die("<p>Error consumiendo el servicio: ".$url."</p></body></html>");
     }
     if(isset($obj->mensaje_error))
     {
+        consumir_servicios_REST(DIR_SERV."/salir","POST",$_SESSION["api_session"]);
         session_destroy();
         die("<p>".$obj->mensaje_error."</p></body></html>");
     }
