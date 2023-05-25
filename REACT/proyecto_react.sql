@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 17-05-2023 a las 10:22:48
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 25-05-2023 a las 11:26:54
 -- Versión del servidor: 10.4.27-MariaDB
--- Versión de PHP: 8.1.12
+-- Versión de PHP: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,29 +24,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Almacen`
+-- Estructura de tabla para la tabla `almacen`
 --
 
-CREATE TABLE `Almacen` (
+CREATE TABLE `almacen` (
   `id_almacen` int(11) NOT NULL,
   `direccion` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `Almacen`
+-- Volcado de datos para la tabla `almacen`
 --
 
-INSERT INTO `Almacen` (`id_almacen`, `direccion`) VALUES
+INSERT INTO `almacen` (`id_almacen`, `direccion`) VALUES
 (1, 'Estepona, Málaga'),
 (2, 'Marbella, Málaga');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Productos`
+-- Estructura de tabla para la tabla `productos`
 --
 
-CREATE TABLE `Productos` (
+CREATE TABLE `productos` (
   `id_producto` int(11) NOT NULL,
   `nombre_producto` varchar(50) NOT NULL,
   `cantidad` int(11) NOT NULL,
@@ -58,20 +58,20 @@ CREATE TABLE `Productos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `Productos`
+-- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `Productos` (`id_producto`, `nombre_producto`, `cantidad`, `unidad_medida`, `precio_unitario`, `fecha_recepcion`, `consumido`, `id_almacen`) VALUES
-(1, 'Aceite de oliva', 50, 'L', '1.20', 20230510, 0, 1),
-(2, 'Arroz blanco', 50000, 'gr', '1.20', 20230429, 0, 1);
+INSERT INTO `productos` (`id_producto`, `nombre_producto`, `cantidad`, `unidad_medida`, `precio_unitario`, `fecha_recepcion`, `consumido`, `id_almacen`) VALUES
+(11, 'ARROZ BLANCO (KG)', 100, 'u', '1.20', 20230525, 0, 1),
+(12, 'ACEITE DE OLIVA', 80, 'L', '6.40', 20230526, 0, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `Usuarios`
+-- Estructura de tabla para la tabla `usuarios`
 --
 
-CREATE TABLE `Usuarios` (
+CREATE TABLE `usuarios` (
   `id_usuario` int(11) NOT NULL,
   `nombre_usuario` varchar(100) NOT NULL,
   `clave` varchar(100) NOT NULL
@@ -82,22 +82,22 @@ CREATE TABLE `Usuarios` (
 --
 
 --
--- Indices de la tabla `Almacen`
+-- Indices de la tabla `almacen`
 --
-ALTER TABLE `Almacen`
+ALTER TABLE `almacen`
   ADD PRIMARY KEY (`id_almacen`);
 
 --
--- Indices de la tabla `Productos`
+-- Indices de la tabla `productos`
 --
-ALTER TABLE `Productos`
+ALTER TABLE `productos`
   ADD PRIMARY KEY (`id_producto`),
   ADD KEY `id_almacen` (`id_almacen`);
 
 --
--- Indices de la tabla `Usuarios`
+-- Indices de la tabla `usuarios`
 --
-ALTER TABLE `Usuarios`
+ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id_usuario`);
 
 --
@@ -105,21 +105,21 @@ ALTER TABLE `Usuarios`
 --
 
 --
--- AUTO_INCREMENT de la tabla `Almacen`
+-- AUTO_INCREMENT de la tabla `almacen`
 --
-ALTER TABLE `Almacen`
+ALTER TABLE `almacen`
   MODIFY `id_almacen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `Productos`
+-- AUTO_INCREMENT de la tabla `productos`
 --
-ALTER TABLE `Productos`
-  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `productos`
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT de la tabla `Usuarios`
+-- AUTO_INCREMENT de la tabla `usuarios`
 --
-ALTER TABLE `Usuarios`
+ALTER TABLE `usuarios`
   MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -127,10 +127,10 @@ ALTER TABLE `Usuarios`
 --
 
 --
--- Filtros para la tabla `Productos`
+-- Filtros para la tabla `productos`
 --
-ALTER TABLE `Productos`
-  ADD CONSTRAINT `Productos_ibfk_1` FOREIGN KEY (`id_almacen`) REFERENCES `Almacen` (`id_almacen`);
+ALTER TABLE `productos`
+  ADD CONSTRAINT `Productos_ibfk_1` FOREIGN KEY (`id_almacen`) REFERENCES `almacen` (`id_almacen`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
