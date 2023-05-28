@@ -33,6 +33,7 @@ $app->post('/insertar_producto',function($request){
     $datos[]=$request->getParam("cantidad");
     $datos[]=$request->getParam("unidad_medida");
     $datos[]=$request->getParam("precio_unitario");
+    $datos[]=$request->getParam("consumido");
 
     echo json_encode(insertar_producto($datos));
 });

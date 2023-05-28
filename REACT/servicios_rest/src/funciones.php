@@ -63,7 +63,7 @@ function insertar_producto($datos)
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
         try {
-            $consulta = "INSERT INTO productos(fecha_recepcion, nombre_producto, cantidad, unidad_medida, precio_unitario, consumido, id_almacen) VALUES(?, ?, ?, ?, ?, 0, 1)";
+            $consulta = "INSERT INTO productos(fecha_recepcion, nombre_producto, cantidad, unidad_medida, precio_unitario, consumido, id_almacen) VALUES(?, ?, ?, ?, ?, ?, 1)";
 
             $sentencia = $conexion->prepare($consulta);
             $sentencia->execute($datos);
