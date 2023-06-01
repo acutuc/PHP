@@ -11,7 +11,7 @@ if (isset($_POST["btnEntrar"])) {
     $error_formulario = $error_usuario || $error_clave;
 
     if(!$error_formulario){
-        
+        $url = 
     }
 }
 ?>
