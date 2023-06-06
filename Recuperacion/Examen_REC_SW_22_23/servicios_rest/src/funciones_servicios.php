@@ -92,7 +92,7 @@ function logueado($datos)
             if($sentencia->rowCount() > 0){
                 $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
             }else{
-                $respuesta["mensaje"] = "Usuario no se encuentra registrado en la BD";
+                $respuesta["mensaje"] = "Usuario baneado";
             }
 
             $sentencia = null;
