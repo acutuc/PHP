@@ -20,6 +20,6 @@ function error_page($title, $cabecera, $mensaje)
     return $html;
 }
 
-define ("DIR_SERV", "http://localhost/Proyectos/Examen_Servicios_Web/servicios_rest");
+define ("DIR_SERV", "http://localhost/PHP/Examenes/Examen_Servicios_Web/servicios_rest");
 define("MINUTOS", 5);
 ?>
