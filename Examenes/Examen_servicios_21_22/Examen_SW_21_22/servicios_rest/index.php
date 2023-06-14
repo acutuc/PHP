@@ -69,6 +69,23 @@ $app->get('/horario/{id_usuario}', function ($request) {
 
 });
 
+$app->get('/usuarios', function ($request) {
+
+    session_id($request->getParam("api_session"));
+    session_start();
+
+    if (isset($_SESSION["tipo"]) && $_SESSION["tipo"] == "admin") {
+
+        echo json_encode(obtener_usuarios());
+
+    } else {
+        session_destroy();
+        echo json_encode(array("no_auth" => "No logueado en la API"));
+    }
+
+});
+
+
 
 
 

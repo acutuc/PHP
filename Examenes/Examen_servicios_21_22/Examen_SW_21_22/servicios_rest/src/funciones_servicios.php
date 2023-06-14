@@ -117,5 +117,28 @@ function horario($id)
     return $respuesta;
 }
 
+function obtener_usuarios()
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+        try {
+
+            $consulta = "SELECT * FROM usuarios WHERE tipo <> 'admin'";
+            $sentencia = $conexion->prepare($consulta);
+            $sentencia->execute();
+
+            $respuesta["usuarios"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            $respuesta["error"] = "Error en la consulta a la BD:" . $e->getMessage();
+        }
+        $sentencia = null;
+        $conexion = null;
+    } catch (PDOException $e) {
+        $respuesta["error"] = "Imposible conectar:" . $e->getMessage();
+    }
+    return $respuesta;
+}
+
 
 ?>

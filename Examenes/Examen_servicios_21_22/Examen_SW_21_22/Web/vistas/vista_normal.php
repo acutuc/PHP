@@ -23,12 +23,13 @@ if (isset($obj->no_auth)) {
     header("Location:index.php");
     exit();
 }
-$datos_horario = $obj->horario;
-//var_dump($datos_horario);
 
-foreach($datos_horario as $tupla){
-    $horario[$tupla->dia][$tupla->hora] = true;
-    echo $horario[$tupla->dia][$tupla->hora];
+foreach ($obj->horario as $tupla) {
+    if (isset($horario[$tupla->dia][$tupla->hora])) {
+        $horario[$tupla->dia][$tupla->hora] .= "/" . $tupla->nombre;
+    } else {
+        $horario[$tupla->dia][$tupla->hora] = $tupla->nombre;
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -55,7 +56,7 @@ foreach($datos_horario as $tupla){
         table {
             border-collapse: collapse;
             width: 80vw;
-            margin:0 auto;
+            margin: 0 auto;
         }
 
         td,
@@ -65,6 +66,10 @@ foreach($datos_horario as $tupla){
 
         th {
             background-color: grey;
+        }
+
+        td {
+            text-align: center;
         }
     </style>
 </head>
@@ -100,15 +105,32 @@ foreach($datos_horario as $tupla){
     echo "<table>";
 
     echo "<tr>";
+
     for ($i = 0; $i < count($dias_semana); $i++) {
         echo "<th>" . $dias_semana[$i] . "</th>";
     }
+
     echo "</tr>";
-    for($o = 0; $o < count($horas); $o++){
+
+    for ($hora = 1; $hora < 7; $hora++) {
         echo "<tr>";
-        echo "<th>".$horas[$o]."</th>";
+        echo "<th>" . $horas[$hora] . "</th>";
+        if ($hora == 4) {
+            echo "<td colspan='5'>RECREO</td>";
+        } else {
+            for ($dia = 1; $dia < 6; $dia++) {
+                if(isset($horario[$dia][$hora])){
+                    echo "<td>".$horario[$dia][$hora]."</td>";
+                }else{
+                    echo "<td></td>";
+                }
+            }
+        }
+
+
         echo "</tr>";
     }
+
     echo "</table>";
     ?>
 </body>
