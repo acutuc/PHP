@@ -20,6 +20,6 @@ function error_page($title,$body)
     return $html;
 }
 
-define("DIR_SERV","http://localhost/Proyectos/Curso22_23/Examen_SW_21_22/servicios_rest");
+define("DIR_SERV","http://localhost/PHP/Examenes/Examen_SW_21_22/servicios_rest");
 
 ?>
