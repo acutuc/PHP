@@ -15,7 +15,8 @@ if (isset($_POST["btnComparar"])) {
     <style>
         .fondo {
             background-color: lightblue;
-            border: 1px solid black;
+            border: 2px solid black;
+            padding: 5px;
         }
 
         #comparar {
@@ -24,6 +25,13 @@ if (isset($_POST["btnComparar"])) {
 
         .error {
             color: red;
+        }
+
+        .verde {
+            background-color: lightgreen;
+            border: 2px solid black;
+            margin: 1rem 0;
+            padding: 5px;
         }
     </style>
 </head>
@@ -60,20 +68,23 @@ if (isset($_POST["btnComparar"])) {
     //Si rellenamos el formulario y no hay errores:
     if (isset($_POST["btnComparar"]) && !$error_formulario) {
     ?>
-        <h2 align="center">Ripios - Resultados</h2>
-        <?php
-        if ($_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 3] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 3] && $_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 2] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 2] && $_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 1] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 1]) {
-            echo "<p>" . $_POST['primera_palabra'] . " y " . $_POST['segunda_palabra'] . " riman.</p>";
-        } else if ($_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 2] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 2] && $_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 1] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 1]) {
-            echo "<p>" . $_POST['primera_palabra'] . " y " . $_POST['segunda_palabra'] . " riman un poco.</p>";
-        } else {
-            echo "<p>" . $_POST['primera_palabra'] . " y " . $_POST['segunda_palabra'] . " no riman.</p>";
-        }
+        <div class="verde">
+            <h2 align="center">Ripios - Resultados</h2>
+            <?php
+            if ($_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 3] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 3] && $_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 2] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 2] && $_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 1] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 1]) {
+                echo "<p><strong>" . $_POST['primera_palabra'] . "</strong> y <strong>" . $_POST['segunda_palabra'] . "</strong> riman.</p>";
+            } else if ($_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 2] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 2] && $_POST["primera_palabra"][strlen($_POST["primera_palabra"]) - 1] == $_POST["segunda_palabra"][strlen($_POST["segunda_palabra"]) - 1]) {
+                echo "<p><strong>" . $_POST['primera_palabra'] . "</strong> y <strong>" . $_POST['segunda_palabra'] . "</strong> riman un poco.</p>";
+            } else {
+                echo "<p><strong>" . $_POST['primera_palabra'] . "</strong> y <strong>" . $_POST['segunda_palabra'] . "</strong> no riman.</p>";
+            }
 
-        ?>
-    <?php
+            ?>
+        <?php
     }
-    ?>
+        ?>
+        </div>
+
 
 </body>
 
