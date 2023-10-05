@@ -11,7 +11,7 @@ if (isset($_POST["btnEnviar"]) && !$error_archivo) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Datos del archivo subiso</title>
+        <title>Datos del archivo subido</title>
         <style>
             .tam_imag {
                 width: 40%;
@@ -24,7 +24,7 @@ if (isset($_POST["btnEnviar"]) && !$error_archivo) {
         <?php
         //CAMBIAR DE NOMBRE EL ARCHIVO:
         $nombre_nuevo = md5(uniqid(uniqid(), true));
-        $array_nombre = explode(".", $FILES["archivo"]["name"]);
+        $array_nombre = explode(".", $_FILES["archivo"]["name"]);
         $extension = "";
         if (count($array_nombre) > 1) {
             $extension = "." . end($array_nombre);
@@ -41,7 +41,7 @@ if (isset($_POST["btnEnviar"]) && !$error_archivo) {
             echo "<p><strong>\$_FILES[\"archivo\"][\"tmp_name\"]: </strong>" . $_FILES["archivo"]["tmp_name"] . "</p>";
             echo "<p><strong>\$_FILES[\"archivo\"][\"size\"]: </strong>" . $_FILES["archivo"]["size"] . " B</p>";
             echo "<p><strong>\$_FILES[\"archivo\"][\"type\"]: </strong>" . $_FILES["archivo"]["type"] . "</p>";
-            echo "<p><img class='tam_imag' src='images/" . $nombre_nuevo . " alt='Foto' title='Foto'/></p>";
+            echo "<p><img class='tam_imag' src='images/" . $nombre_nuevo . "' alt='Foto' title='Foto'/></p>";
         } else {
             echo "<p>No se ha podido mover la imagen a la carpeta destino en el servidor.</p>";
         }
@@ -51,7 +51,7 @@ if (isset($_POST["btnEnviar"]) && !$error_archivo) {
     </body>
 
     </html>
-<?
+<?php
 } else {
 ?>
     <!DOCTYPE html>
