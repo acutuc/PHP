@@ -4,7 +4,54 @@ if (isset($_POST["btnEnviar"])) {
 }
 
 if (isset($_POST["btnEnviar"]) && !$error_archivo) {
-    echo "contesto con la info";
+?>
+    <!DOCTYPE html>
+    <html lang="es">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Datos del archivo subiso</title>
+        <style>
+            .tam_imag {
+                width: 40%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Datos del archivo subido</h1>
+        <?php
+        //CAMBIAR DE NOMBRE EL ARCHIVO:
+        $nombre_nuevo = md5(uniqid(uniqid(), true));
+        $array_nombre = explode(".", $FILES["archivo"]["name"]);
+        $extension = "";
+        if (count($array_nombre) > 1) {
+            $extension = "." . end($array_nombre);
+        }
+        $nombre_nuevo .= $extension;
+
+        //MOVER EL ARCHIVO: 
+        @$var = move_uploaded_file($_FILES["archivo"]["tmp_name"], "images/" . $nombre_nuevo);
+        if ($var) {
+            echo "<p><strong style='color:#32CD32;'>Archivo cargado correctamente.</strong></p>";
+            echo "<h3>Datos de la imagen cargada</h3>";
+            echo "<p><strong>\$_FILES[\"archivo\"][\"name\"]: </strong>" . $_FILES["archivo"]["name"] . "</p>";
+            echo "<p><strong>\$_FILES[\"archivo\"][\"error\"]: </strong>" . $_FILES["archivo"]["error"] . "</p>";
+            echo "<p><strong>\$_FILES[\"archivo\"][\"tmp_name\"]: </strong>" . $_FILES["archivo"]["tmp_name"] . "</p>";
+            echo "<p><strong>\$_FILES[\"archivo\"][\"size\"]: </strong>" . $_FILES["archivo"]["size"] . " B</p>";
+            echo "<p><strong>\$_FILES[\"archivo\"][\"type\"]: </strong>" . $_FILES["archivo"]["type"] . "</p>";
+            echo "<p><img class='tam_imag' src='images/" . $nombre_nuevo . " alt='Foto' title='Foto'/></p>";
+        } else {
+            echo "<p>No se ha podido mover la imagen a la carpeta destino en el servidor.</p>";
+        }
+
+
+        ?>
+    </body>
+
+    </html>
+<?
 } else {
 ?>
     <!DOCTYPE html>
