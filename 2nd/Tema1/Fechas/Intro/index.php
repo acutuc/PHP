@@ -41,7 +41,7 @@
         //Redondea hacia arriba
         echo "<p><strong>ceil(5.6): </strong>".ceil(5.6)."</p>";
 
-        //abs(numero)
+        //abs(numero) 
         //Nos devuelve el valor absoluto.
         echo "<p><strong>abs(-5.6): </strong>".abs(-5.6)."</p>";
 
