@@ -10,25 +10,40 @@ function mi_strlen($texto)
 
 function mi_explode($separador, $texto)
 {
+    // Inicializar array auxiliar
     $aux = [];
+
+    // Obtener longitud del texto
     $longitud_texto = mi_strlen($texto);
 
+    // Inicializar índice
     $i = 0;
+
+    // Omitir separadores iniciales
     while ($i < $longitud_texto && $texto[$i] == $separador) {
         $i++;
     }
 
+    // Procesar texto
     if ($i < $longitud_texto) {
         $j = 0;
         $aux[$j] = $texto[$i];
+
+        // Iterar sobre el resto del texto
         for ($k = $i + 1; $k < $longitud_texto; $k++) {
+            // Si el carácter actual no es un separador
             if ($texto[$k] != $separador) {
+                // Anexar carácter al elemento actual
                 $aux[$j] .= $texto[$k];
             } else {
+                // Omitir separadores consecutivos
                 while ($k < $longitud_texto && $texto[$k] == $separador) {
                     $k++;
                 }
+
+                // Si hay más caracteres en el texto
                 if ($k < $longitud_texto) {
+                    // Incrementar índice y agregar nuevo elemento
                     $j++;
                     $aux[$j] = $texto[$k];
                 }
@@ -36,6 +51,7 @@ function mi_explode($separador, $texto)
         }
     }
 
+    // Devolver array auxiliar
     return $aux;
 }
 
