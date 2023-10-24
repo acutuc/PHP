@@ -59,9 +59,6 @@ if (isset($_POST["btnEnviar"])) {
     $error_formulario = $_POST["texto"] == "";
 }
 
-
-if (isset($_POST["btnEnviar"]) && !$error_formulario) {
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
