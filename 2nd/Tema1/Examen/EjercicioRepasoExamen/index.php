@@ -54,7 +54,6 @@ if (isset($_POST["btnComprobar"])) {
         } else {
             echo "<p>No hay ningun carácter repetido en la palabra</p>";
         }
-        explode()
     }
     ?>
 </body>
