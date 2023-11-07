@@ -42,10 +42,9 @@
         die("<p>Imposible conectar: " . $e->getMessage() . "</p></body></html>");
     }
 
-    //Declaramos la consulta:
-    $consulta = "SELECT * FROM usuarios";
-
     try {
+        //Declaramos la consulta:
+        $consulta = "SELECT * FROM usuarios";
         $resultado = mysqli_query($conexion, $consulta);
     } catch (Exception $e) {
         mysqli_close($conexion);
@@ -59,7 +58,7 @@
     while ($tupla = mysqli_fetch_assoc($resultado)) {
         echo "<tr>";
 
-        echo "<td>" . $tupla["nombre"] . "</td>";
+        echo "<td><form action='index.php' method='post'><button type='submit' name='btnDetalle' class='enlace' value='" . $tupla["id_usuario"] . "'>" . $tupla["nombre"] . "</button></form></td>";
         echo "<td><img src='images/eliminar.jpg' alt='Borrar' title='Borrar Usuario'></td>";
         echo "<td><img src='images/editar.png' alt='Editar' title='Editar Usuario'></td>";
 
@@ -68,11 +67,18 @@
 
     echo "</table>";
 
-    echo "<form action='usuario_nuevo.php' method='post'>";
-    echo "<p><button type='submit' name='btnNuevoUsuario'>Insertar nuevo usuario</button></p>";
-    echo "</form>";
+    if (isset($_POST["btnDetalle"])) {
+        echo "<h3>Detalles de usuario con ID: " . $_POST["btnDetalle"] . "</h3>";
+    } else {
+        echo "<form action='usuario_nuevo.php' method='post'>";
+        echo "<p><button type='submit' name='btnNuevoUsuario'>Insertar nuevo usuario</button></p>";
+        echo "</form>";
+    }
+
+
 
     //Cerramos conexion:
+    mysqli_free_result($resultado);
     mysqli_close($conexion);
 
     ?>
