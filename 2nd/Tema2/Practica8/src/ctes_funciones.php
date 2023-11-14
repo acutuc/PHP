@@ -13,3 +13,7 @@ function LetraNIF($dni)
     $letraNif = substr($letras, $valor, 1);
     return $letraNif;
 }
+
+function is_repetido($usuario){
+    
+}

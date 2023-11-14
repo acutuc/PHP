@@ -36,6 +36,10 @@ require "src/ctes_funciones.php";
             height: 100px;
             width: 100px;
         }
+
+        .error{
+            color:red;
+        }
     </style>
     <title>Práctica 8</title>
 </head>
@@ -105,11 +109,20 @@ require "src/ctes_funciones.php";
 
     //4. Si hemos pulsado añadir un usuario:
     if (isset($_POST["btnUsuarioNuevo"])) {
+        $error_nombre = $_POST["nombre"] == "";
+        $error_usuario = $_POST["usuario"] == "" || is_repetido($_POST["usuario"]);
+        $error_clave = $_POST["clave"] == "";
+        $error_dni = strlen($_POST["dni"]) !== 9;
     ?>
         <h3>Agregar nuevo usuario</h3>
         <p>
             <label for="nombre">Nombre:</label><br>
             <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST["nombre"])) echo $_POST["nombre"] ?>" placeholder="Nombre..." />
+            <?php
+            if(isset($_POST["btnContinuarAgregar"]) && $error_nombre){
+                echo "<span class='error'>*Campo vacío*</span>";
+            }
+            ?>
         </p>
     <?php
     }
