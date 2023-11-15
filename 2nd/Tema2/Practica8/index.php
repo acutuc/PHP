@@ -37,8 +37,8 @@ require "src/ctes_funciones.php";
             width: 100px;
         }
 
-        .error{
-            color:red;
+        .error {
+            color: red;
         }
     </style>
     <title>Práctica 8</title>
@@ -104,22 +104,30 @@ require "src/ctes_funciones.php";
             die("<p>No se ha podido realizar la consulta a la BD. " . $e->getMessage() . "</p></body></html>");
         }
 
+        //Si el usuario tiene foto, la borramos:
+        if ($_POST["nombreFoto"] != "no_imagen.jpg") {
+            unlink("Img/" . $_POST["nombreFoto"]);
+        }
+
         $mensaje_accion = "Usuario eliminado de la BD con éxito";
     }
 
     //4. Si hemos pulsado añadir un usuario:
     if (isset($_POST["btnUsuarioNuevo"])) {
-        $error_nombre = $_POST["nombre"] == "";
-        $error_usuario = $_POST["usuario"] == "" || is_repetido($_POST["usuario"]);
-        $error_clave = $_POST["clave"] == "";
-        $error_dni = strlen($_POST["dni"]) !== 9;
+        if (isset($_POST["btnContinuarUsuarioNuevo"])) {
+            $error_nombre = $_POST["nombre"] == "";
+            $error_usuario = $_POST["usuario"] == "" || is_repetido($_POST["usuario"]);
+            $error_clave = $_POST["clave"] == "";
+            $error_dni = strlen($_POST["dni"]) !== 9;
+        }
+
     ?>
         <h3>Agregar nuevo usuario</h3>
         <p>
             <label for="nombre">Nombre:</label><br>
             <input type="text" name="nombre" id="nombre" value="<?php if (isset($_POST["nombre"])) echo $_POST["nombre"] ?>" placeholder="Nombre..." />
             <?php
-            if(isset($_POST["btnContinuarAgregar"]) && $error_nombre){
+            if (isset($_POST["btnContinuarAgregar"]) && $error_nombre) {
                 echo "<span class='error'>*Campo vacío*</span>";
             }
             ?>
@@ -162,7 +170,7 @@ require "src/ctes_funciones.php";
         echo "<td>" . $tupla["id_usuario"] . "</td>";
         echo "<td><img src='Img/" . $tupla["foto"] . "' title='Foto usuario' alt='Foto usuario'></td>";
         echo "<td><form method='post' action='index.php'><input type='hidden' name='nombreUsuario' value='" . $tupla["nombre"] . "'/><button type='submit' name='btnDetallesUsuario' value='" . $tupla["id_usuario"] . "'class='enlace'>" . $tupla["nombre"] . "</button></form></td>";
-        echo "<td><form method='post' action='index.php'><button type='submit' name='btnBorrarUsuario' value='" . $tupla["id_usuario"] . "' class='enlace'>Borrar</button> - <button type='submit' name='btnEditarUsuario' class='enlace'>Editar</button></form></td>";
+        echo "<td><form method='post' action='index.php'><input type='hidden' name='nombreFoto' value='" . $tupla["foto"] . "'/><button type='submit' name='btnBorrarUsuario' value='" . $tupla["id_usuario"] . "' class='enlace'>Borrar</button> - <button type='submit' name='btnEditarUsuario' class='enlace'>Editar</button></form></td>";
         echo "</tr>";
     }
     echo "</table>";
