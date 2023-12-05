@@ -82,6 +82,7 @@ function error_page($title, $body)
         }
         echo "</select> ";
         echo "<button name='btnVerHorario'>Ver Horario</button>";
+        echo "</form>";
 
         if (isset($_POST["btnVerHorario"]) || isset($_POST["btnEditar"])) {
             echo "<h3 class='centrar'>Horario del Profesor: " . $nombre_profesor . "</h3>";
@@ -164,25 +165,21 @@ function error_page($title, $body)
             echo "<table>";
 
             echo "<tr><th>Grupo</th><th>Acción</th></tr>";
-            while($tupla = mysqli_fetch_assoc($resultado)){
+            while ($tupla = mysqli_fetch_assoc($resultado)) {
                 echo "<tr>";
-                echo "<td>".$tupla["nombre"]."</td>";
+                echo "<td>" . $tupla["nombre"] . "</td>";
                 echo "<td><form method='post' action='index.php'><button name='btnQuitar' class='enlace'>Quitar</button></form></td>";
                 echo "</tr>";
             }
             echo "</table>";
         }
-
-        
-
         ?>
-    </form>
-    </p>
+        </p>
 
-    <?php
-    mysqli_free_result($resultado);
-    mysqli_close($conexion);
-    ?>
+        <?php
+        mysqli_free_result($resultado);
+        mysqli_close($conexion);
+        ?>
 </body>
 
 </html>
