@@ -1,5 +1,4 @@
 <?php
-//Hago un control de Baneo
     try{
         $conexion=mysqli_connect(SERVIDOR_BD,USUARIO_BD,CLAVE_BD,NOMBRE_BD);
         mysqli_set_charset($conexion,"utf8");
@@ -34,8 +33,6 @@
     
     $datos_usuario_logueado=mysqli_fetch_assoc($resultado);
     mysqli_free_result($resultado);
-
-    // Ahora control de inactividad
 
     if(time()-$_SESSION["ultima_accion"]>MINUTOS_INACT*60)
     {
