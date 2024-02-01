@@ -4,10 +4,10 @@ session_start();
 
 require "src/funciones_ctes.php";
 
-if(isset($_POST["btnSalir"])){
+if (isset($_POST["btnSalir"])) {
     //Si pulsamos en salir, destruimos la sesion de la api tambien:
     $datos["api_key"] = $_SESSION["api_key"];
-    $url = DIR_SERV."/salir";
+    $url = DIR_SERV . "/salir";
     $respuesta = consumir_servicios_REST($url, "POST", $datos);
 
     session_destroy();
@@ -30,5 +30,4 @@ if (isset($_SESSION["usuario"])) {
 } else {
     //Formulario de inicio de sesión y control de errores:
     require "vistas/vista_home.php";
-    
 }

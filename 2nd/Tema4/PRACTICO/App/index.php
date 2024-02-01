@@ -17,13 +17,26 @@ if (isset($_POST["btnEntrar"])) {
         $respuesta = consumir_servicios_REST($url, "POST", $datos);
         $obj = json_decode($respuesta);
 
-        if(isset($obj->error)){
+        if(!$obj){
+            session_destroy();
+            die(error_page("PRACTICO", "<p>No se ha recibido nada de la api</p>"));
+        }
 
+        if(isset($obj->error)){
+            session_destroy();
+            die(error_page("PRACTICO", "<p>".$obj->error."</p>"));
         }
         if(isset($obj->mensaje)){
             $error_usuario = true;
         }else{
-            echo "si";
+            //Guardamos en sesiones el usuario, clave, ultima accion Y el token:
+            $_SESSION["usuario"] = $datos[0];
+            $_SESSION["clave"] = $datos[1];
+            $_SESSION["ultima_accion"] = time();
+            //ATENCION ABAJO:
+            $_SESSION["api_session"] = $obj->api_session;
+            header("Location:index.php");
+            exit();
         }
     }
 }
