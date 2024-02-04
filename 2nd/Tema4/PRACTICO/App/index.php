@@ -10,8 +10,8 @@ if (isset($_POST["btnEntrar"])) {
 
     $error_formulario = $error_usuario || $error_clave;
     if (!$error_formulario) {
-        $datos[] = $_POST["usuario"];
-        $datos[] = md5($_POST["clave"]);
+        $datos["usuario"] = $_POST["usuario"];
+        $datos["clave"] = md5($_POST["clave"]);
 
         $url = DIR_SERV."/login";
         $respuesta = consumir_servicios_REST($url, "POST", $datos);
@@ -19,7 +19,7 @@ if (isset($_POST["btnEntrar"])) {
 
         if(!$obj){
             session_destroy();
-            die(error_page("PRACTICO", "<p>No se ha recibido nada de la api</p>"));
+            die(error_page("PRACTICO", $respuesta));
         }
 
         if(isset($obj->error)){
@@ -30,8 +30,8 @@ if (isset($_POST["btnEntrar"])) {
             $error_usuario = true;
         }else{
             //Guardamos en sesiones el usuario, clave, ultima accion Y el token:
-            $_SESSION["usuario"] = $datos[0];
-            $_SESSION["clave"] = $datos[1];
+            $_SESSION["usuario"] = $datos["usuario"];
+            $_SESSION["clave"] = $datos["clave"];
             $_SESSION["ultima_accion"] = time();
             //ATENCION ABAJO:
             $_SESSION["api_session"] = $obj->api_session;

@@ -9,7 +9,7 @@ require __DIR__ . '/Slim/autoload.php';
 //crear app
 $app = new \Slim\App;
 
-$app->get('/login', function ($request) {
+$app->post('/login', function ($request) {
 
     $usuario = $request->getParam("usuario");
     $clave = $request->getParam("clave");
