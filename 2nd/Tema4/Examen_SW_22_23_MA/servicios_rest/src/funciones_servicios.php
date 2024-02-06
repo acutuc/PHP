@@ -37,8 +37,10 @@ function login($lector, $clave)
         //INICIO DE SESIONES:
         session_name("examen_22_23");
         session_start();
+        //Paso los datos del usuario y la api_session:
         $respuesta["usuario"] = $sentencia->fetch(PDO::FETCH_ASSOC);
         $respuesta["api_session"] = session_id();
+        
         $_SESSION["usuario"] = $respuesta["usuario"]["lector"]; //$lector
         $_SESSION["clave"] = $respuesta["usuario"]["clave"]; //$clave
         $_SESSION["tipo"] = $respuesta["usuario"]["tipo"];
