@@ -44,6 +44,17 @@
             <button class='enlace' name="btnSalir">Salir</button>
         </form>
     </div>
+    <?php
+    if(isset($_SESSION["accion"])){
+        echo "<p>".$_SESSION["accion"]."</p>";
+        unset($_SESSION["accion"]);
+    }
+    echo "<h2>Listado de los libros</h2>";
+    echo "<div id='libros'>";
+
+
+    echo "</div>";
+    ?>
 </body>
 
 </html>

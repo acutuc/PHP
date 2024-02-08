@@ -13,22 +13,22 @@ if (isset($_POST["btnEntrar"])) {
         $datos["usuario"] = $_POST["usuario"];
         $datos["clave"] = md5($_POST["clave"]);
 
-        $url = DIR_SERV."/login";
+        $url = DIR_SERV . "/login";
         $respuesta = consumir_servicios_REST($url, "POST", $datos);
         $obj = json_decode($respuesta);
 
-        if(!$obj){
+        if (!$obj) {
             session_destroy();
             die(error_page("PRACTICO", $respuesta));
         }
 
-        if(isset($obj->error)){
+        if (isset($obj->error)) {
             session_destroy();
-            die(error_page("PRACTICO", "<p>".$obj->error."</p>"));
+            die(error_page("PRACTICO", "<p>" . $obj->error . "</p>"));
         }
-        if(isset($obj->mensaje)){
+        if (isset($obj->mensaje)) {
             $error_usuario = true;
-        }else{
+        } else {
             //Guardamos en sesiones el usuario, clave, ultima accion Y el token:
             $_SESSION["usuario"] = $datos["usuario"];
             $_SESSION["clave"] = $datos["clave"];
