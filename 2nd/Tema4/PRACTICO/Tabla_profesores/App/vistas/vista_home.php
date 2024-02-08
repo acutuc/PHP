@@ -78,7 +78,7 @@ if (isset($_POST["btnEntrar"])) {
     </form>
     <?php
     if(isset($_SESSION["mensaje"])){
-        echo "sadasd";
+        echo "<p class='mensaje'>".$_SESSION["seguridad"]."</p>";
         session_destroy();
     }
     ?>
