@@ -4,21 +4,23 @@ session_start();
 
 require "src/funciones_ctes.php";
 
-if(isset($_POST["btnSalir"])){
-    consumir_servicios_REST(DIR_SERV."/salir", "GET");
+if (isset($_POST["btnSalir"])) {
+    consumir_servicios_REST(DIR_SERV . "/salir", "POST", [$datos["api_session"]]);
     session_destroy();
     header("Location:index.php");
     exit();
 }
 
-if(isset($_SESSION["usuario"])){
+if (isset($_SESSION["usuario"])) {
 
-    if($_SESSION["tipo"] == "admin"){
+    require "src/seguridad.php";
 
-    }else{
-        
+    if ($datos_usu_log->tipo == "admin") {
+        header("Location:admin/gest_horarios.php");
+        exit();
+    } else {
+        require "vistas/vista_normal.php";
     }
-}else{
+} else {
     require "vistas/vista_home.php";
 }
-

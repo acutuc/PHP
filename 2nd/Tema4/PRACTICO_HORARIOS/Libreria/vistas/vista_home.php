@@ -11,7 +11,7 @@ if (isset($_POST["btnEntrar"])) {
         $datos["usuario"] = $_POST["usuario"];
         $datos["clave"] = md5($_POST["clave"]);
 
-        $respuesta = consumir_servicios_REST($url, "GET", $datos);
+        $respuesta = consumir_servicios_REST($url, "POST", $datos);
         $obj = json_decode($respuesta);
 
         if (!$obj) {

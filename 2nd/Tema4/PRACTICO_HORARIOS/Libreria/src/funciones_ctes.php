@@ -21,3 +21,4 @@ function error_page($title,$mensaje)
 }
 
 define("DIR_SERV", "http://localhost/PHP/2nd/Tema4/PRACTICO_HORARIOS/servicios_rest");
+define("MINUTOS", 5);

@@ -17,7 +17,7 @@ $app->get('/conexion_MYSQLI', function ($request) {
     echo json_encode(conexion_mysqli());
 });
 
-$app->get('/login', function ($request) {
+$app->post('/login', function ($request) {
 
     $usuario = $request->getParam("usuario");
     $clave = $request->getParam("clave");
@@ -31,14 +31,15 @@ $app->get('/logueado', function ($request) {
     session_id($token);
     session_start();
 
-    if (isset($_SESSION["tipo"]) && $_SESSION["tipo"] == "admin") {
+    if (isset($_SESSION["tipo"])) {
         echo json_encode(logueado($_SESSION["usuario"], $_SESSION["clave"]));
     } else {
+        session_destroy();
         echo json_encode(array("no_auth" => "Usted no tiene permisos para usar este servicio."));
     }
 });
 
-$app->get('/salir', function ($request) {
+$app->post('/salir', function ($request) {
 
     $token = $request->getParam("api_session");
     session_id($token);
@@ -46,6 +47,11 @@ $app->get('/salir', function ($request) {
     session_destroy();
 
     echo json_encode(array("log_out" => "Sesión cerrada"));
+});
+
+$app->get('/horario/{id_usuario}', function ($request) {
+
+    echo json_encode(obtener_horario($request->getAttribute("id_usuario")));
 });
 
 
