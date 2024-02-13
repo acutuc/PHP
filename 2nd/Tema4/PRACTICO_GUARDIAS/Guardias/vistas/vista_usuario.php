@@ -32,17 +32,17 @@
     </form>
     <h2>Equipos de Guardia del IES Mar de Alborán</h2>
     <?php
-    $dias_semana[0] = "";
-    $dias_semana[1] = "Lunes";
-    $dias_semana[2] = "Martes";
-    $dias_semana[3] = "Miércoles";
-    $dias_semana[4] = "Jueves";
-    $dias_semana[5] = "Viernes";
+    $dia[0] = "";
+    $dia[1] = "Lunes";
+    $dia[2] = "Martes";
+    $dia[3] = "Miércoles";
+    $dia[4] = "Jueves";
+    $dia[5] = "Viernes";
 
-    echo "<table'>";
+    echo "<table>";
     echo "<tr>";
     for ($i = 0; $i < 6; $i++) {
-        echo "<th>" . $dias_semana[$i] . "</th>";
+        echo "<th>" . $dia[$i] . "</th>";
     }
     echo "</tr>";
 
