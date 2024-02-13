@@ -40,31 +40,30 @@
     $obj = json_decode($respuesta);
     if (!$obj) {
         session_destroy();
-        die(error_page("Horarios profesores", $url));
+        die("<p>" . $url . "</p>");
     }
     if (isset($obj->error)) {
         session_destroy();
-        die(error_page("Horarios profesores", $obj->error));
+        die("<p>" . $obj->error . "</p>");
     }
-    if (isset($obj->horario)) {
-        $horas = array("8:15 - 9:15", "9:15 - 10:15", "10:15 - 11:15", "11:15 - 11:45", "11:45 - 12:45", "12:45 - 13:45", "13:45 - 14:45");
+    $horas = array("8:15 - 9:15", "9:15 - 10:15", "10:15 - 11:15", "11:15 - 11:45", "11:45 - 12:45", "12:45 - 13:45", "13:45 - 14:45");
 
-        echo "<table>";
-        echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th></tr>";
+    echo "<table>";
+    echo "<tr><th></th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th></tr>";
 
-        for ($hora = 0; $hora < 7; $hora++) {
-            echo "<tr>";
-            for ($dia = 0; $dia < 5; $dia++) {
-                if ($dia == 0) {
-                    echo "<th>" . $horas[$hora] . "</th>";
-                }
-                echo "<td></td>";
+    for ($hora = 0; $hora < 7; $hora++) {
+        echo "<tr>";
+        for ($dia = 0; $dia < 5; $dia++) {
+            if ($dia == 0) {
+                echo "<th>" . $horas[$hora] . "</th>";
             }
-            echo "</tr>";
+            echo "<td></td>";
         }
-
-        echo "</table>";
+        echo "</tr>";
     }
+
+    echo "</table>";
+
     ?>
 </body>
 

@@ -11,21 +11,6 @@ if (isset($obj->error)) {
     session_destroy();
     die(error_page("Horarios profesores", $obj->error));
 }
-
-if (isset($_POST["btnVerHorario"])) {
-    $url = DIR_SERV . "/horario/" . $_POST["btnVerHorario"];
-    $datos["api_session"] = $_SESSION["api_session"];
-    $respuesta = consumir_servicios_REST($url, "GET", $datos);
-    $obj2 = json_decode($respuesta);
-    if (!$obj2) {
-        session_destroy();
-        die(error_page("Horarios profesores", $url));
-    }
-    if (isset($obj2->error)) {
-        session_destroy();
-        die(error_page("Horarios profesores", $obj->error));
-    }
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -82,6 +67,17 @@ if (isset($_POST["btnVerHorario"])) {
     </form>
     <?php
     if (isset($_POST["btnVerHorario"])) {
+        $url = DIR_SERV . "/horario/" . $_POST["profesor"];
+        $respuesta = consumir_servicios_REST($url, "GET", $datos);
+        $obj2 = json_decode($respuesta);
+        if (!$obj2) {
+            session_destroy();
+            die("<p>" . $url . "</p>");
+        }
+        if (isset($obj2->error)) {
+            session_destroy();
+            die("<p>" . $obj->error . "</p>");
+        }
 
         foreach ($obj2->horario as $tupla) {
             if (isset($horario[$tupla->dia][$tupla->hora])) {
@@ -104,7 +100,11 @@ if (isset($_POST["btnVerHorario"])) {
                 echo "<td colspan='5' class='centrar'>RECREO</td>";
             } else {
                 for ($dia = 1; $dia <= 5; $dia++) {
-                    echo "<td></td>";
+                    if (isset($horario[$dia][$hora])) {
+                        echo "<td class='centrar'>" . $horario[$dia][$hora] . "</td>";
+                    } else {
+                        echo "<td class='centrar'></td>";
+                    }
                 }
             }
             echo "</tr>";
