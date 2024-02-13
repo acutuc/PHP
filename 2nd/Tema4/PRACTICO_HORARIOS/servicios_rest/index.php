@@ -51,9 +51,50 @@ $app->post('/salir', function ($request) {
 
 $app->get('/horario/{id_usuario}', function ($request) {
 
-    echo json_encode(obtener_horario($request->getAttribute("id_usuario")));
+    $token = $request->getParam("api_session");
+    session_id($token);
+    session_start();
+
+    if (isset($_SESSION["usuario"])) {
+        echo json_encode(obtener_horario($request->getAttribute("id_usuario")));
+    } else {
+        session_destroy();
+        echo json_encode(array("no_auth" => "Usted no tiene permisos para usar este servicio."));
+    }
+    
 });
 
+$app->get('/usuarios', function ($request) {
+
+    $token = $request->getParam("api_session");
+    session_id($token);
+    session_start();
+
+    if (isset($_SESSION["usuario"])) {
+        echo json_encode(obtener_usuarios());
+    } else {
+        session_destroy();
+        echo json_encode(array("no_auth" => "Usted no tiene permisos para usar este servicio."));
+    }
+});
+
+$app->get('/tieneGrupo/{dia}/{hora}/{id_usuario}', function ($request) {
+
+    $token = $request->getParam("api_session");
+    session_id($token);
+    session_start();
+
+    if (isset($_SESSION["usuario"])) {
+        $datos[] = $request->getAttribute('dia');
+        $datos[] = $request->getAttribute('hora');
+        $datos[] = $request->getAttribute('id_usuario');
+
+        echo json_encode(tiene_grupo($datos));
+    } else {
+        session_destroy();
+        echo json_encode(array("no_auth" => "Usted no tiene permisos para usar este servicio."));
+    }
+});
 
 // Una vez creado servicios los pongo a disposición
 $app->run();

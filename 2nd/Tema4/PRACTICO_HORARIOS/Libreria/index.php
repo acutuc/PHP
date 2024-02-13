@@ -16,8 +16,7 @@ if (isset($_SESSION["usuario"])) {
     require "src/seguridad.php";
 
     if ($datos_usu_log->tipo == "admin") {
-        header("Location:admin/gest_horarios.php");
-        exit();
+        require "vistas/vista_admin.php";
     } else {
         require "vistas/vista_normal.php";
     }
