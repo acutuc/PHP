@@ -140,7 +140,7 @@ function obtener_usuarios()
     return $respuesta;
 }
 
-function tiene_grupo($datos)
+function obtener_horario_dia_hora($datos)
 {
     try {
         $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
@@ -149,7 +149,7 @@ function tiene_grupo($datos)
     }
 
     try {
-        $consulta = "SELECT * FROM horario_lectivo, usuarios WHERE usuarios.id_usuario = horario_lectivo.usuario AND dia = ? AND hora = ? AND horario_lectivo.usuario = ?";
+        $consulta = "SELECT horario_lectivo.id_horario, grupos.nombre FROM horario_lectivo, grupos WHERE horario_lectivo.grupo = grupos.id_grupo AND horario_lectivo.usuario = ? AND horario_lectivo.dia = ? AND horario_lectivo.hora = ?";
         $sentencia = $conexion->prepare($consulta);
         $sentencia->execute($datos);
     } catch (PDOException $e) {
@@ -157,7 +157,31 @@ function tiene_grupo($datos)
         $sentencia = null;
         $respuesta["error"] = "Error en la consulta:" . $e->getMessage();
     }
-    $respuesta["tiene_grupo"] = $sentencia->rowCount() > 0;
+    $respuesta["horario"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
+    $sentencia = null;
+    $conexion = null;
+
+    return $respuesta;
+}
+
+function obtener_horario_no_dia_hora($datos)
+{
+    try {
+        $conexion = new PDO("mysql:host=" . SERVIDOR_BD . ";dbname=" . NOMBRE_BD, USUARIO_BD, CLAVE_BD, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"));
+    } catch (PDOException $e) {
+        $respuesta["error"] = "Imposible conectar:" . $e->getMessage();
+    }
+
+    try {
+        $consulta = "SELECT * FROM grupos WHERE id_grupo NOT IN (SELECT grupos.id_grupo FROM horario_lectivo, grupos WHERE horario_lectivo.grupo = grupos.id_grupo AND horario_lectivo.usuario = ? AND horario_lectivo.dia = ? AND horario_lectivo.hora = ?)";
+        $sentencia = $conexion->prepare($consulta);
+        $sentencia->execute($datos);
+    } catch (PDOException $e) {
+        $conexion = null;
+        $sentencia = null;
+        $respuesta["error"] = "Error en la consulta:" . $e->getMessage();
+    }
+    $respuesta["horario"] = $sentencia->fetchAll(PDO::FETCH_ASSOC);
     $sentencia = null;
     $conexion = null;
 

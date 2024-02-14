@@ -11,6 +11,23 @@ if (isset($obj->error)) {
     session_destroy();
     die(error_page("Horarios profesores", $obj->error));
 }
+
+if (isset($_POST["btnEditar"])) {
+    $url = DIR_SERV . "/obtenerHorarioDiaHora/" . $_POST["profesor"];
+    $datos["api_session"] = $_SESSION["api_session"];
+    $datos["dia"] = $_POST["dia"];
+    $datos["hora"] = $_POST["hora"];
+    $respuesta = consumir_servicios_REST($url, "GET", $datos);
+    $obj3 = json_decode($respuesta);
+    if (!$obj3) {
+        session_destroy();
+        die(error_page("Horarios profesores", $url));
+    }
+    if (isset($obj3->error)) {
+        session_destroy();
+        die(error_page("Horarios profesores", $obj->error));
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -37,6 +54,19 @@ if (isset($obj->error)) {
             border-collapse: collapse;
             margin: 0 auto;
             width: 80%;
+        }
+
+        .enlace {
+            background: none;
+            border: none;
+            text-decoration: underline;
+            color: blue;
+            cursor: pointer;
+        }
+        .t_dia_hora{
+            border:1px solid black;
+            border-collapse: collapse;
+            text-align: center;
         }
     </style>
 </head>
@@ -66,7 +96,7 @@ if (isset($obj->error)) {
         </p>
     </form>
     <?php
-    if (isset($_POST["btnVerHorario"])) {
+    if (isset($_POST["profesor"]) || isset($_POST["btnEditar"])) {
         $url = DIR_SERV . "/horario/" . $_POST["profesor"];
         $respuesta = consumir_servicios_REST($url, "GET", $datos);
         $obj2 = json_decode($respuesta);
@@ -101,15 +131,56 @@ if (isset($obj->error)) {
             } else {
                 for ($dia = 1; $dia <= 5; $dia++) {
                     if (isset($horario[$dia][$hora])) {
-                        echo "<td class='centrar'>" . $horario[$dia][$hora] . "</td>";
+                        echo "<td class='centrar'>" . $horario[$dia][$hora] . "<form method='post' action='index.php'>";
+                        echo "<button class='enlace' name='btnEditar'>Editar</button>";
+                        echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'/>";
+                        echo "<input type='hidden' name='dia' value='" . $dia . "'/>";
+                        echo "<input type='hidden' name='hora' value='" . $hora . "'/>";
+                        echo "</form></td>";
                     } else {
-                        echo "<td class='centrar'></td>";
+                        echo "<td class='centrar'><form method='post' action='index.php'>";
+                        echo "<button class='enlace' name='btnEditar'>Editar</button>";
+                        echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'/>";
+                        echo "<input type='hidden' name='dia' value='" . $dia . "'/>";
+                        echo "<input type='hidden' name='hora' value='" . $hora . "'/>";
+                        echo "</form></td>";
                     }
                 }
             }
             echo "</tr>";
         }
         echo "</table>";
+
+        if (isset($_POST["btnEditar"])) {
+            $dia_semana[1] = "Lunes";
+            $dia_semana[] = "Martes";
+            $dia_semana[] = "Miércoles";
+            $dia_semana[] = "Jueves";
+            $dia_semana[] = "Viernes";
+
+            if ($_POST["hora"] < 4) {
+                echo "<h2>Editando la " . $_POST["hora"] . "º hora (" . $horas[$_POST["hora"]] . ") del día " . $dia_semana[$_POST["dia"]] . "</h2>";
+            } else {
+                echo "<h2>Editando la " . ($_POST["hora"] - 1) . "º hora (" . $horas[$_POST["hora"]] . ") del día " . $dia_semana[$_POST["dia"]] . "</h2>";
+            }
+
+            echo "<table class='t_dia_hora'>";
+            echo "<tr><th>Grupo</th><th>Acción</th></tr>";
+            foreach ($obj->horario as $tupla) {
+                echo "<tr>";
+
+                echo "<td>" . $tupla->nombre . "</td>";
+                echo "<td><form method='post' action='index.php'>";
+                echo "<button name='btnQuitar' value='".$tupla->id_horario."'>Quitar</button>";
+                echo "<input type='hidden' name='profesor' value='" . $_POST["profesor"] . "'/>";
+                echo "<input type='hidden' name='dia' value='" . $_POST["dia"] . "'/>";
+                echo "<input type='hidden' name='hora' value='" . $_POST["hora"] . "'/>";
+                echo "</form></td>";
+
+                echo "</tr>";
+            }
+            echo "</table>";
+        }
     }
     ?>
 </body>
