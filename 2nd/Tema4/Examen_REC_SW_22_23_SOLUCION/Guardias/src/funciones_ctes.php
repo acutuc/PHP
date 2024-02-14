@@ -1,4 +1,7 @@
 <?php
+define("DIR_SERV","http://localhost/PHP/2nd/Tema4/Examen_REC_SW_22_23_SOLUCION/servicios_rest");
+define("MINUTOS","5");
+
 function consumir_servicios_REST($url,$metodo,$datos=null)
 {
     $llamada=curl_init();
@@ -12,15 +15,11 @@ function consumir_servicios_REST($url,$metodo,$datos=null)
     return $respuesta;
 }
 
-function error_page($title,$body)
+function error_page($title,$cabecera,$mensaje)
 {
     $html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
     $html.='<title>'.$title.'</title></head>';
-    $html.='<body>'.$body.'</body></html>';
+    $html.='<body><h1>'.$cabecera.'</h1>'.$mensaje.'</body></html>';
     return $html;
 }
-
-
-define("DIR_SERV","http://localhost/PHP/2nd/Tema4/Examen2_23_24_SW_SOLUCION/servicios_rest");
-define("MINUTOS",5);
 ?>
